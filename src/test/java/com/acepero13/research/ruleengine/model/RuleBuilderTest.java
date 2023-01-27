@@ -1,6 +1,6 @@
 package com.acepero13.research.ruleengine.model;
 
-import api.Rule;
+import com.acepero13.research.ruleengine.api.Rule;
 import com.acepero13.research.ruleengine.model.rules.RuleBuilder;
 import org.junit.jupiter.api.Test;
 

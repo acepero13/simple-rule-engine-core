@@ -1,9 +1,9 @@
 package com.acepero13.research.ruleengine.core;
 
-import api.RuleEngine;
-import api.RulesEventsListener;
+import com.acepero13.research.ruleengine.api.RuleEngine;
+import com.acepero13.research.ruleengine.api.RulesEventsListener;
 import com.acepero13.research.ruleengine.model.Facts;
-import api.Rule;
+import com.acepero13.research.ruleengine.api.Rule;
 import com.acepero13.research.ruleengine.model.Rules;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -112,8 +112,8 @@ public class DefaultRuleEngine implements RuleEngine {
     }
 
     private void logFailure(Exception e, Rule rule) {
-        var message = "Evaluation failed. "
-                + (params.isSkipOnFirstFailedRule() ? "Skipping subsequent rules" : "continuing with other rules.")
+        var message = "Evaluation failed with error. " + e.getMessage() + " ."
+                + (params.isSkipOnFirstFailedRule() ? "Skipping subsequent rules" : "Continuing with other rules.")
                 + " Failing rule:" + rule;
         logger.error(message);
     }

@@ -1,8 +1,8 @@
 package com.acepero13.research.ruleengine.core;
 
-import api.Rule;
-import api.RuleEngine;
-import api.RulesEventsListener;
+import com.acepero13.research.ruleengine.api.Rule;
+import com.acepero13.research.ruleengine.api.RuleEngine;
+import com.acepero13.research.ruleengine.api.RulesEventsListener;
 
 import com.acepero13.research.ruleengine.model.Facts;
 import com.acepero13.research.ruleengine.model.Rules;

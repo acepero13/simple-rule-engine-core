@@ -1,6 +1,6 @@
 package com.acepero13.research.ruleengine.model.rules;
 
-import api.Rule;
+import com.acepero13.research.ruleengine.api.Rule;
 import lombok.ToString;
 
 @ToString

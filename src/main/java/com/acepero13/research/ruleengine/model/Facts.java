@@ -56,4 +56,11 @@ public class Facts implements Iterable<Fact<?>> {
                 .map(type::cast)
                 .orElse(defaultValue);
     }
+
+    public <T> Optional<T> get(String factName, Class<T> type) {
+        return getFact(factName)
+                .map(Fact::getValue)
+                .filter(type::isInstance)
+                .map(type::cast);
+    }
 }

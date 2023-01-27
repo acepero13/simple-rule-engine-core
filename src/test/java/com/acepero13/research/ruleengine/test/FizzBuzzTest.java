@@ -1,7 +1,7 @@
 package com.acepero13.research.ruleengine.test;
 
-import api.Rule;
-import api.RuleEngine;
+import com.acepero13.research.ruleengine.api.Rule;
+import com.acepero13.research.ruleengine.api.RuleEngine;
 import com.acepero13.research.ruleengine.core.DefaultRuleEngine;
 import com.acepero13.research.ruleengine.model.Facts;
 import com.acepero13.research.ruleengine.model.Rules;
@@ -11,10 +11,11 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.acepero13.research.ruleengine.test.Constants.EXPECTED_FIZZ_SOLUTION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FizzBuzzTest {
-    private static final List<String> expected = List.of("1", "2", "3", "4", "fizz", "6", "buzz", "8", "9", "fizz", "11", "12", "13", "buzz", "fizz", "16", "17", "18", "19", "fizz", "buzz", "22", "23", "24", "fizz", "26", "27", "buzz", "29", "fizz", "31", "32", "33", "34", "fizzbuzz", "36", "37", "38", "39", "fizz", "41", "buzz", "43", "44", "fizz", "46", "47", "48", "buzz", "fizz", "51", "52", "53", "54", "fizz", "buzz", "57", "58", "59", "fizz", "61", "62", "buzz", "64", "fizz", "66", "67", "68", "69", "fizzbuzz", "71", "72", "73", "74", "fizz", "76", "buzz", "78", "79", "fizz", "81", "82", "83", "buzz", "fizz", "86", "87", "88", "89", "fizz", "buzz", "92", "93", "94", "fizz", "96", "97", "buzz", "99", "fizz");
+
 
     public static final String NUMBER_FACT = "number";
 
@@ -32,7 +33,7 @@ public class FizzBuzzTest {
             engine.fire(facts);
         }
 
-        assertEquals(expected, result);
+        assertEquals(EXPECTED_FIZZ_SOLUTION, result);
 
 
     }
