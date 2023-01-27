@@ -25,11 +25,11 @@ public class FizzBuzzWithAnnotationsTests {
     public void fizzBuzz() {
 
         Rules rules = new Rules(
-                RuleBuilder.of(new Buzz(result)),
-                RuleBuilder.of(new Fizz(result)),
-                RuleBuilder.of(new FizzBuzz(result))
+                RuleBuilder.of(new BuzzRule(result)),
+                RuleBuilder.of(new FizzRule(result)),
+                RuleBuilder.of(new FizzBuzzRule(result))
 
-        ).register(RuleBuilder.of(new NonFizzBuzz(result)));
+        ).register(RuleBuilder.of(new NonFizzBuzzRule(result)));
         RuleEngine engine = new DefaultRuleEngine(rules);
         Facts facts = new Facts();
 
@@ -43,10 +43,10 @@ public class FizzBuzzWithAnnotationsTests {
     }
 
     @Rule(name = "buzz", priority = 2)
-    private static class Buzz {
+    private static class BuzzRule {
         private final List<String> results;
 
-        private Buzz(List<String> results) {
+        private BuzzRule(List<String> results) {
             this.results = results;
         }
 
@@ -63,10 +63,10 @@ public class FizzBuzzWithAnnotationsTests {
 
 
     @Rule(name = "fizz", priority = 2)
-    private static class Fizz {
+    private static class FizzRule {
         private final List<String> results;
 
-        private Fizz(List<String> results) {
+        private FizzRule(List<String> results) {
             this.results = results;
         }
 
@@ -82,10 +82,10 @@ public class FizzBuzzWithAnnotationsTests {
     }
 
     @Rule(name = "fizzbuzz", priority = 3)
-    private static class FizzBuzz {
+    private static class FizzBuzzRule {
         private final List<String> results;
 
-        private FizzBuzz(List<String> results) {
+        private FizzBuzzRule(List<String> results) {
             this.results = results;
         }
 
@@ -101,10 +101,10 @@ public class FizzBuzzWithAnnotationsTests {
     }
 
     @Rule(name = "Non FizzBuzz", priority = 1)
-    private static class NonFizzBuzz {
+    private static class NonFizzBuzzRule {
         private final List<String> results;
 
-        private NonFizzBuzz(List<String> results) {
+        private NonFizzBuzzRule(List<String> results) {
             this.results = results;
         }
 
