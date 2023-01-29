@@ -9,11 +9,16 @@ import com.acepero13.research.ruleengine.model.Facts;
 import com.acepero13.research.ruleengine.model.Rules;
 import com.acepero13.research.ruleengine.model.rules.RuleBuilder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ForwardChainEngineTest {
+    private static final Logger logger = LogManager.getLogger();
     @Test
     void inference() {
         Rule IfAThenB = new RuleBuilder()
@@ -64,6 +69,8 @@ class ForwardChainEngineTest {
     }
 
     @com.acepero13.research.ruleengine.annotations.Rule(name = "It is a Frog")
+    @ToString
+    @EqualsAndHashCode
     private static class IsAFrog {
         @Condition
         boolean when(@Fact("croaks") boolean croaks, @Fact("eats") EAT eats) {
@@ -90,9 +97,10 @@ class ForwardChainEngineTest {
     }
 
     @com.acepero13.research.ruleengine.annotations.Rule(name = "If frog then is green")
+    @EqualsAndHashCode
     private static class IfFrogGreen {
         @Condition
-        boolean when(@Fact("animal") Animal animal) {
+        public boolean when(@Fact("animal") Animal animal) {
             return animal instanceof Frog;
         }
 
@@ -142,6 +150,7 @@ class ForwardChainEngineTest {
         GREEN, BLUE;
     }
 
+    @ToString
     private static class Frog extends Animal {
 
         @Override
@@ -150,6 +159,7 @@ class ForwardChainEngineTest {
         }
     }
 
+    @ToString
     private static class Canary extends Animal {
         @Override
         protected EAT eats() {

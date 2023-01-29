@@ -1,10 +1,12 @@
 package com.acepero13.research.ruleengine.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.util.Objects;
 
 @ToString
+@EqualsAndHashCode
 public class Fact<T> {
 
     private final String name;

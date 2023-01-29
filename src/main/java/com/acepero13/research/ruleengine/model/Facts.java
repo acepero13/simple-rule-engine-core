@@ -2,13 +2,17 @@ package com.acepero13.research.ruleengine.model;
 
 import com.acepero13.research.ruleengine.api.FactBaseListener;
 import lombok.ToString;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 @ToString
 public class Facts implements Iterable<Fact<?>> {
-    private final Set<Fact<?>> facts = new HashSet<>();
+    private static final Logger logger = LogManager.getLogger();
+    private final Set<Fact<?>> facts = ConcurrentHashMap.newKeySet();
     private final List<FactBaseListener> listeners = new ArrayList<>();
     private final Map<String, List<Consumer<FactsOperation>>> consumers = new HashMap<>();
 
@@ -33,12 +37,14 @@ public class Facts implements Iterable<Fact<?>> {
         if (valueExists) {
             if (oldValue != null && !oldValue.equals(value)) {
                 listeners.forEach(l -> l.newFactReplaced(name, value));
+                logger.debug("Replacing fact {} with value: {}", name, value);
                 notifyConsumers(name, FactsOperation.UPDATE);
             }
 
             remove(name);
         } else {
             notifyConsumers(name, FactsOperation.CREATE);
+            logger.debug("Creating new fact: {} with value {}", name, value);
             listeners.forEach(l -> l.newFactAdded(name, value));
         }
     }

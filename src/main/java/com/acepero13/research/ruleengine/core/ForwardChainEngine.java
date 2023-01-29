@@ -12,8 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-// TODO: Consider changes (updates)
 // TODO: ForwardChainEngineParams
 
 public class ForwardChainEngine implements RuleEngine, FactBaseListener {
@@ -22,7 +22,7 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
     private final ForwardChainEngineParameters params;
     private final List<RulesEventsListener> listeners = new ArrayList<>();
     private final Rules rules;
-    private final List<String> newFacts = new ArrayList<>();
+    private final List<String> newFacts = new CopyOnWriteArrayList<>();
     private final List<String> updatedFacts = new ArrayList<>();
 
     public ForwardChainEngine(Rules rules) {
@@ -35,30 +35,38 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
     }
 
     @Override
-    public void fire(Rules rules, Facts facts) {
+    public void fire(final Rules rules, final Facts facts) {
+        Objects.requireNonNull(rules, "Rules cannot be empty");
+        Objects.requireNonNull(facts, "Facts cannot be null");
+
+        logger.debug("starting forward chaining rule evaluation with the following facts: {}", facts);
+
         facts.register(this);
 
-        Set<Rule> agenda;
+        List<Rule> agenda;
         do {
             agenda = doFire(rules, facts);
         } while (thereAreStillRulesToConsider(agenda));
 
         facts.unregister(this);
+        logger.debug("Finished evaluating rules. Facts based after evaluation: {}", facts);
     }
 
-    private Set<Rule> doFire(Rules rules, Facts facts) {
-        Set<Rule> agenda;
+    private List<Rule> doFire(Rules rules, Facts facts) {
+        List<Rule> agenda;
         newFacts.clear();
         agenda = selectActiveRules(rules, facts);
         executeAgenda(facts, agenda);
         return agenda;
     }
 
-    private boolean thereAreStillRulesToConsider(Set<Rule> agenda) {
+    private boolean thereAreStillRulesToConsider(List<Rule> agenda) {
+        logger.debug("thereAreStillRulesToConsider. Agenda is empty: {}; there are new Facts : {}", agenda.isEmpty(), !newFacts.isEmpty());
         return !agenda.isEmpty() && (!newFacts.isEmpty() || !updatedFacts.isEmpty());
     }
 
-    private void executeAgenda(Facts facts, Set<Rule> agenda) {
+    private void executeAgenda(Facts facts, List<Rule> agenda) {
+        logger.debug("Executing the following agenda: {}, with facts: {}", agenda, facts);
         for (Rule rule : agenda) {
             tryToFire(facts, rule);
         }
@@ -88,11 +96,14 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
         return params;
     }
 
-    private Set<Rule> selectActiveRules(Rules rules, Facts facts) {
-        Set<Rule> agenda = new TreeSet<>();
+    private List<Rule> selectActiveRules(Rules rules, Facts facts) {
+        List<Rule> agenda = new ArrayList<>();
         for (Rule rule : rules) {
             if (evaluationSucceeded(facts, rule)) {
+                logger.debug("Activated rule: {}", rule);
                 agenda.add(rule);
+            }else {
+                logger.debug("Rule {} failed", rule);
             }
         }
         return agenda;
@@ -109,17 +120,12 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
 
     }
 
-    private boolean execute(Facts facts, Rule rule) {
-        listeners.forEach(l -> l.beforeFire(rule));
-        boolean result = tryToFire(facts, rule);
-        listeners.forEach(l -> l.afterFire(rule));
-        return result;
-    }
-
 
     private boolean tryToFire(Facts facts, Rule rule) {
         try {
+            listeners.forEach(l -> l.beforeFire(rule));
             rule.execute(facts);
+            listeners.forEach(l -> l.afterFire(rule));
             return true;
         } catch (Exception e) {
             logFailure(e, rule);
@@ -134,21 +140,15 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
     }
 
 
-    private boolean isThresholdTooLow(Rule rule) {
-        if (params.getPriorityThreshold() <= 0) {
-            return false;
-        }
-        return params.getPriorityThreshold() > rule.priority();
-    }
-
     @Override
     public <T> void newFactAdded(String name, T value) {
+        logger.debug("New fact {} added to ForwardEngine with value{} ", name, value);
         this.newFacts.add(name);
     }
 
     @Override
     public <T> void newFactReplaced(String name, T value) {
-        if(params.isConsiderUpdatesFacts()) {
+        if (params.isConsiderUpdatesFacts()) {
             updatedFacts.add(name);
         }
     }

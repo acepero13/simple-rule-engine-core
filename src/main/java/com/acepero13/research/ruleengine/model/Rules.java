@@ -1,9 +1,10 @@
 package com.acepero13.research.ruleengine.model;
 
 import com.acepero13.research.ruleengine.api.Rule;
+import lombok.ToString;
 
 import java.util.*;
-
+@ToString
 public class Rules implements Iterable<Rule> {
     private final Set<Rule> rules = new HashSet<>();
 

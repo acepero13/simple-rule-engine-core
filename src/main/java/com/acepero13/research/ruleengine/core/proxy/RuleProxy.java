@@ -4,6 +4,8 @@ import com.acepero13.research.ruleengine.annotations.Action;
 import com.acepero13.research.ruleengine.annotations.Condition;
 import com.acepero13.research.ruleengine.api.Rule;
 import com.acepero13.research.ruleengine.model.Facts;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class RuleProxy implements InvocationHandler {
+    private static final Logger logger = LogManager.getLogger();
     private final Object target;
     private String name;
     private int priority = -1;
@@ -23,7 +26,7 @@ public class RuleProxy implements InvocationHandler {
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args) {
         String name = method.getName();
         switch (name) {
             case "name":
@@ -56,7 +59,7 @@ public class RuleProxy implements InvocationHandler {
         } else if (anotherRule instanceof Rule) {
             return Integer.compare(((Rule) anotherRule).priority(), getPriority());
         }
-        // TODO: log
+        logger.debug("Could not compare rules, with arguments: {}", args);
         return -1;
     }
 
@@ -72,17 +75,20 @@ public class RuleProxy implements InvocationHandler {
             tryToExecute(method, facts);
             return;
         } catch (AnnotationHelper.ArgumentMismatchException e) {
-            // TODO: LOG;
+            logger.warn("Could not find some facts in the fact base. Trying another method: {}", facts);
         }
 
         if (facts.length != 1 || !(facts[0] instanceof Facts)) {
-            // TODO: Log
+            logger.error("Cannot execute rule. There are unknown arguments");
             return;
         }
         try {
             method.invoke(target, facts[0]);
         } catch (IllegalAccessException | InvocationTargetException | IllegalStateException e) {
-            //TODO: LOG
+            logger.error("Error invoking method: execute", e);
+        }
+        catch (Exception e) {
+            logger.error("ERROR happened", e);
         }
     }
 

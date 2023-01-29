@@ -29,7 +29,7 @@ public class DefaultRuleEngine implements RuleEngine {
 
     @Override
     public void fire(Rules rules, Facts facts) {
-
+        doFire(rules, facts);
     }
 
     @Override
@@ -61,18 +61,23 @@ public class DefaultRuleEngine implements RuleEngine {
     }
 
     private void doFire(Rules rules, Facts facts) {
+        logger.debug("starting forward chaining rule evaluation with the following facts: {}", facts);
         for (Rule rule : rules) {
             if (shouldSkip(rule, facts)) {
+                logger.debug("Skipping rule: {}. With facts: {}", rule, facts);
                 continue;
             }
             if (evaluationFailed(facts, rule)) {
                 if (params.isSkipOnFirstNonTriggeredRule()) {
+                    logger.debug("Stop executing rules because skipOnFirstNonTriggeredRule flag is activated");
                     break;
                 }
+                logger.debug("Evaluation of rule: {}. With facts: {}. Continuing evaluation", rule, facts);
                 continue;
             }
             boolean result = execute(facts, rule);
             if (shouldStopExecutionAfter(result)) {
+                logger.debug("Stop executing rules because isSkipOnFirstAppliedRule flag is activated and rule was executed successfully.");
                 break;
             }
 

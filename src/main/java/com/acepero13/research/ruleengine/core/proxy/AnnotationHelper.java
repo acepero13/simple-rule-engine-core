@@ -48,7 +48,7 @@ public class AnnotationHelper {
                 .collect(Collectors.toList());
 
         if (parameters.size() != methodParameters.length) {
-            throw new ArgumentMismatchException("Could not find some facts in the fact base");
+            throw new ArgumentMismatchException("Could not find some facts in the fact base: " + myFacts);
         }
         return parameters;
 

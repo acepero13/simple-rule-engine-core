@@ -1,9 +1,11 @@
 package com.acepero13.research.ruleengine.model.rules;
 
 import com.acepero13.research.ruleengine.api.Rule;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @ToString
+@EqualsAndHashCode
 abstract class BasicRule implements Rule {
     public static final int DEFAULT_PRIORITY = Integer.MAX_VALUE;
     public static final String DEFAULT_DESCRIPTION = "no description";
