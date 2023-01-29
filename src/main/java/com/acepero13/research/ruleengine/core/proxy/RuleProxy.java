@@ -3,6 +3,7 @@ package com.acepero13.research.ruleengine.core.proxy;
 import com.acepero13.research.ruleengine.annotations.Action;
 import com.acepero13.research.ruleengine.annotations.Condition;
 import com.acepero13.research.ruleengine.api.Rule;
+import com.acepero13.research.ruleengine.model.Facts;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -61,8 +62,21 @@ public class RuleProxy implements InvocationHandler {
 
     private void execute(Object[] args) {
         Optional<Method> opMethod = AnnotationHelper.getMethodForCalling(target, Action.class);
-        opMethod.ifPresent(m -> tryToExecute(m, args));
+        opMethod.ifPresent(m -> tryToExecuteAction(m, args));
 
+    }
+
+    private void tryToExecuteAction(Method method, Object[] facts) {
+        method.setAccessible(true);
+        if(facts.length != 1 || !(facts[0] instanceof Facts) ){
+            // TODO: Log
+            return;
+        }
+        try {
+            method.invoke(target, facts[0]);
+        } catch (IllegalAccessException | InvocationTargetException | IllegalStateException e) {
+            //TODO: LOG
+        }
     }
 
     private boolean evaluate(Object[] args) {

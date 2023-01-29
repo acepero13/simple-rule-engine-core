@@ -11,6 +11,6 @@ public interface RuleEngine {
     void register(RulesEventsListener listener);
     void unregister(RulesEventsListener listener);
     void unregisterAll();
-    EngineParameters getParameters();
+
 
 }

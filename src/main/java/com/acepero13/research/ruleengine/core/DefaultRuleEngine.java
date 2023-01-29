@@ -52,8 +52,11 @@ public class DefaultRuleEngine implements RuleEngine {
         listeners.clear();
     }
 
-    @Override
     public EngineParameters getParameters() {
+        return params;
+    }
+
+    public EngineParameters getParams() {
         return params;
     }
 
