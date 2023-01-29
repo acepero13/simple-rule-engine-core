@@ -68,7 +68,14 @@ public class RuleProxy implements InvocationHandler {
 
     private void tryToExecuteAction(Method method, Object[] facts) {
         method.setAccessible(true);
-        if(facts.length != 1 || !(facts[0] instanceof Facts) ){
+        try {
+            tryToExecute(method, facts);
+            return;
+        } catch (AnnotationHelper.ArgumentMismatchException e) {
+            // TODO: LOG;
+        }
+
+        if (facts.length != 1 || !(facts[0] instanceof Facts)) {
             // TODO: Log
             return;
         }

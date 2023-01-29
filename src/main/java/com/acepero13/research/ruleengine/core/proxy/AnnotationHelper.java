@@ -48,10 +48,17 @@ public class AnnotationHelper {
                 .collect(Collectors.toList());
 
         if (parameters.size() != methodParameters.length) {
-            throw new IllegalStateException("Could not find some facts in the fact base");
+            throw new ArgumentMismatchException("Could not find some facts in the fact base");
         }
         return parameters;
 
 
+    }
+
+    public static class ArgumentMismatchException extends RuntimeException{
+
+        public ArgumentMismatchException(String msg) {
+            super(msg);
+        }
     }
 }
