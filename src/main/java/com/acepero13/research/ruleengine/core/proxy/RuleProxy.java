@@ -39,12 +39,13 @@ public class RuleProxy implements InvocationHandler {
                 return evaluate(args);
             case "execute":
                 execute(args);
+                break;
             case "equals":
-                return objectEquals(target, args[0]);
+                return objectEquals(args[0]);
             case "toString":
                 return objectToString();
             case "hashCode":
-                return objectHashCode(target);
+                return objectHashCode();
             case "compareTo":
                 return compareToMethod(args);
         }
@@ -150,17 +151,25 @@ public class RuleProxy implements InvocationHandler {
         return description;
     }
 
-    public String objectClassName(Object obj) {
-        return obj.getClass().getName();
+    public boolean objectEquals(Object o) {
+        if (this.target == o) return true;
+        if (o == null || target.getClass() != o.getClass()) return false;
+
+        RuleProxy ruleProxy = (RuleProxy) o;
+
+        if (getPriority() != ruleProxy.getPriority()) return false;
+        if (!name.equals(ruleProxy.name)) return false;
+        return getDescription().equals(ruleProxy.getDescription());
     }
 
-    public int objectHashCode(Object obj) {
-        return System.identityHashCode(obj);
+
+    public int objectHashCode() {
+        int result = getRuleName().hashCode();
+        result = 31 * result + getPriority();
+        result = 31 * result + getDescription().hashCode();
+        return result;
     }
 
-    public boolean objectEquals(Object obj, Object other) {
-        return obj == other;
-    }
 
     public String objectToString() {
         return "Rule { name = " + getRuleName() + "; description = " + getDescription() + "}";

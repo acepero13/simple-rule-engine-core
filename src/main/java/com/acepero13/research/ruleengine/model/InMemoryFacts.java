@@ -7,14 +7,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 @ToString
 public class InMemoryFacts implements Facts {
     private static final Logger logger = LogManager.getLogger();
-    private final Set<Fact<?>> facts = ConcurrentHashMap.newKeySet();
+    private final Set<Fact<?>> facts = new HashSet<>();
     private final List<FactBaseListener> listeners = new ArrayList<>();
     private final Map<String, List<Consumer<FactsOperation>>> consumers = new HashMap<>();
 
@@ -55,9 +54,9 @@ public class InMemoryFacts implements Facts {
 
     private void notifyConsumers(String name, FactsOperation operation) {
         consumers.entrySet().stream()
-                .filter(e -> e.getKey().equals(name))
-                .flatMap(e -> e.getValue().stream())
-                .forEach(l -> l.accept(operation));
+                 .filter(e -> e.getKey().equals(name))
+                 .flatMap(e -> e.getValue().stream())
+                 .forEach(l -> l.accept(operation));
     }
 
     @Override
