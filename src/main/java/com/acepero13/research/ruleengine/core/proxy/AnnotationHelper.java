@@ -2,7 +2,7 @@ package com.acepero13.research.ruleengine.core.proxy;
 
 import com.acepero13.research.ruleengine.annotations.Fact;
 import com.acepero13.research.ruleengine.annotations.Rule;
-import com.acepero13.research.ruleengine.model.Facts;
+import com.acepero13.research.ruleengine.model.InMemoryFacts;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -32,10 +32,10 @@ public class AnnotationHelper {
         if (facts.length != 1) {
             throw new IllegalStateException("Method cannot receive more than one facts base");
         }
-        if (!(facts[0] instanceof Facts)) {
+        if (!(facts[0] instanceof InMemoryFacts)) {
             throw new IllegalStateException("Argument must be a fact base");
         }
-        Facts myFacts = (Facts) facts[0];
+        InMemoryFacts myFacts = (InMemoryFacts) facts[0];
 
         Parameter[] methodParameters = method.getParameters();
         List<Object> parameters = Arrays.stream(methodParameters)
@@ -55,7 +55,7 @@ public class AnnotationHelper {
 
     }
 
-    private static String buildErrorMessage(Facts myFacts, Parameter[] methodParameters) {
+    private static String buildErrorMessage(InMemoryFacts myFacts, Parameter[] methodParameters) {
         var paramFacts = Arrays.stream(methodParameters)
                 .filter(p -> p.isAnnotationPresent(Fact.class))
                 .map(p -> (Fact) p.getAnnotations()[0])

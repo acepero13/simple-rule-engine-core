@@ -13,7 +13,7 @@ class RuleBuilderTest {
 
     @Test
     void createSimpleRule() {
-        Facts realFacts = new Facts();
+        InMemoryFacts realFacts = new InMemoryFacts();
         realFacts.put("test", 1);
         AtomicBoolean value = new AtomicBoolean(false);
         Rule rule = new RuleBuilder()

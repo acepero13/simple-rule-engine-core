@@ -4,7 +4,8 @@ import com.acepero13.research.ruleengine.api.FactBaseListener;
 import com.acepero13.research.ruleengine.api.Rule;
 import com.acepero13.research.ruleengine.api.RuleEngine;
 import com.acepero13.research.ruleengine.api.RulesEventsListener;
-import com.acepero13.research.ruleengine.model.Facts;
+import com.acepero13.research.ruleengine.api.Facts;
+import com.acepero13.research.ruleengine.model.InMemoryFacts;
 import com.acepero13.research.ruleengine.model.Rules;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +13,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 // TODO: ForwardChainEngineParams
 
@@ -35,7 +35,7 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
     }
 
     @Override
-    public void fire(final Rules rules, final Facts facts) {
+    public void fire(final Rules rules, final InMemoryFacts facts) {
         Objects.requireNonNull(rules, "Rules cannot be empty");
         Objects.requireNonNull(facts, "Facts cannot be null");
 
@@ -73,7 +73,7 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
     }
 
     @Override
-    public void fire(Facts facts) {
+    public void fire(InMemoryFacts facts) {
         fire(this.rules, facts);
     }
 

@@ -2,8 +2,9 @@ package com.acepero13.research.ruleengine.core;
 
 import com.acepero13.research.ruleengine.api.RuleEngine;
 import com.acepero13.research.ruleengine.api.RulesEventsListener;
-import com.acepero13.research.ruleengine.model.Facts;
+import com.acepero13.research.ruleengine.api.Facts;
 import com.acepero13.research.ruleengine.api.Rule;
+import com.acepero13.research.ruleengine.model.InMemoryFacts;
 import com.acepero13.research.ruleengine.model.Rules;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,12 +29,12 @@ public class DefaultRuleEngine implements RuleEngine {
     }
 
     @Override
-    public void fire(Rules rules, Facts facts) {
+    public void fire(Rules rules, InMemoryFacts facts) {
         doFire(rules, facts);
     }
 
     @Override
-    public void fire(Facts facts) {
+    public void fire(InMemoryFacts facts) {
         doFire(rules, facts);
     }
 

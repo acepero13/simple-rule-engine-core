@@ -1,6 +1,7 @@
 package com.acepero13.research.ruleengine.model;
 
 import com.acepero13.research.ruleengine.api.FactBaseListener;
+import com.acepero13.research.ruleengine.api.Facts;
 import lombok.ToString;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,12 +12,13 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 @ToString
-public class Facts implements Iterable<Fact<?>> {
+public class InMemoryFacts implements Facts {
     private static final Logger logger = LogManager.getLogger();
     private final Set<Fact<?>> facts = ConcurrentHashMap.newKeySet();
     private final List<FactBaseListener> listeners = new ArrayList<>();
     private final Map<String, List<Consumer<FactsOperation>>> consumers = new HashMap<>();
 
+    @Override
     public <T> void put(String name, T value) {
         Objects.requireNonNull(name, "fact name must not be null");
         Objects.requireNonNull(value, "fact value must not be null");
@@ -28,6 +30,7 @@ public class Facts implements Iterable<Fact<?>> {
     }
 
 
+    @Override
     public void registerNotificationsFor(String name, Consumer<FactsOperation> consumer) {
         List<Consumer<FactsOperation>> listOfConsumersForName = consumers.getOrDefault(name, new ArrayList<>());
         listOfConsumersForName.add(consumer);
@@ -57,34 +60,41 @@ public class Facts implements Iterable<Fact<?>> {
                 .forEach(l -> l.accept(operation));
     }
 
+    @Override
     public void register(FactBaseListener listener) {
         this.listeners.add(listener);
     }
 
+    @Override
     public void unregister(FactBaseListener listener) {
         this.listeners.remove(listener);
     }
 
+    @Override
     public void unregisterAll() {
         this.listeners.clear();
         this.consumers.clear();
     }
 
-    private void remove(String name) {
+    @Override
+    public void remove(String name) {
         facts.removeIf(f -> f.matchesName(name));
     }
 
+    @Override
     public <T> void add(Fact<T> fact) {
         Objects.requireNonNull(fact, "Fact cannot be null");
         facts.add(fact);
     }
 
 
+    @Override
     public <T> Optional<T> get(String factName) {
         return getFact(factName).map(f -> (T) f.getValue());
     }
 
-    private Optional<Fact<?>> getFact(String factName) {
+    @Override
+    public Optional<Fact<?>> getFact(String factName) {
         return facts.stream().filter(f -> f.matchesName(factName)).findFirst();
 
     }
@@ -94,18 +104,22 @@ public class Facts implements Iterable<Fact<?>> {
         return facts.iterator();
     }
 
+    @Override
     public int total() {
         return facts.size();
     }
 
+    @Override
     public <T> T get(String factName, Class<T> type, T defaultValue) {
         return getFact(factName).map(Fact::getValue).filter(type::isInstance).map(type::cast).orElse(defaultValue);
     }
 
+    @Override
     public <T> Optional<T> get(String factName, Class<T> type) {
         return getFact(factName).map(Fact::getValue).filter(type::isInstance).map(type::cast);
     }
 
+    @Override
     public <T> void updatesIfExists(String factName, Class<T> type, UnaryOperator<T> func) {
         getFact(factName)
                 .map(Fact::getValue)
@@ -115,6 +129,7 @@ public class Facts implements Iterable<Fact<?>> {
                 });
     }
 
+    @Override
     public boolean exists(String factName) {
         return facts.contains(factName);
     }

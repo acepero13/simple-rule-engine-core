@@ -5,7 +5,7 @@ import com.acepero13.research.ruleengine.annotations.Condition;
 import com.acepero13.research.ruleengine.annotations.Fact;
 import com.acepero13.research.ruleengine.api.Rule;
 import com.acepero13.research.ruleengine.api.RuleEngine;
-import com.acepero13.research.ruleengine.model.Facts;
+import com.acepero13.research.ruleengine.model.InMemoryFacts;
 import com.acepero13.research.ruleengine.model.Rules;
 import com.acepero13.research.ruleengine.model.rules.RuleBuilder;
 import lombok.Data;
@@ -35,7 +35,7 @@ class ForwardChainEngineTest {
                 .build();
 
         Rules rules = new Rules(IfBThenC, IfAThenB);
-        Facts facts = new Facts();
+        InMemoryFacts facts = new InMemoryFacts();
         facts.put("A", "A");
 
         RuleEngine engine = new ForwardChainEngine(rules);
@@ -55,7 +55,7 @@ class ForwardChainEngineTest {
                 RuleBuilder.of(new IfFrogGreen()),
                 RuleBuilder.of(new IfCanaryBlue())
         );
-        Facts facts = new Facts();
+        InMemoryFacts facts = new InMemoryFacts();
         facts.put("croaks", true);
         facts.put("eats", EAT.FLIES);
 
@@ -79,7 +79,7 @@ class ForwardChainEngineTest {
         }
 
         @Action
-        void then(Facts facts) {
+        void then(InMemoryFacts facts) {
             facts.put("animal", new Frog());
         }
     }
@@ -92,7 +92,7 @@ class ForwardChainEngineTest {
         }
 
         @Action
-        void then(Facts facts) {
+        void then(InMemoryFacts facts) {
             facts.put("animal", new Canary());
         }
     }
@@ -106,7 +106,7 @@ class ForwardChainEngineTest {
         }
 
         @Action
-        void then(Facts facts) {
+        void then(InMemoryFacts facts) {
             facts.updatesIfExists("animal", Animal.class, (Animal a) -> a.setColor(Color.GREEN));
         }
     }
@@ -119,7 +119,7 @@ class ForwardChainEngineTest {
         }
 
         @Action
-        void then(Facts facts) {
+        void then(InMemoryFacts facts) {
             facts.updatesIfExists("animal", Animal.class, a -> a.setColor(Color.BLUE));
         }
     }

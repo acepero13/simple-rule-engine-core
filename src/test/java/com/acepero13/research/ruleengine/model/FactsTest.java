@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FactsTest {
 
-    private final Facts facts = new Facts();
+    private final InMemoryFacts facts = new InMemoryFacts();
 
     @Test
     void addAndRetrieveFacts() {

@@ -2,7 +2,7 @@ package com.acepero13.research.ruleengine.model.rules;
 
 import com.acepero13.research.ruleengine.api.Action;
 import com.acepero13.research.ruleengine.api.Condition;
-import com.acepero13.research.ruleengine.model.Facts;
+import com.acepero13.research.ruleengine.api.Facts;
 
 import java.util.List;
 

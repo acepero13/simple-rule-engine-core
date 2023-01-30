@@ -3,7 +3,7 @@ package com.acepero13.research.ruleengine.test;
 import com.acepero13.research.ruleengine.api.Rule;
 import com.acepero13.research.ruleengine.api.RuleEngine;
 import com.acepero13.research.ruleengine.core.DefaultRuleEngine;
-import com.acepero13.research.ruleengine.model.Facts;
+import com.acepero13.research.ruleengine.model.InMemoryFacts;
 import com.acepero13.research.ruleengine.model.Rules;
 import com.acepero13.research.ruleengine.model.rules.RuleBuilder;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ public class FizzBuzzTest {
         Rules rules = createRules();
 
         RuleEngine engine = new DefaultRuleEngine(rules);
-        Facts facts = new Facts();
+        InMemoryFacts facts = new InMemoryFacts();
 
         for (int i = 1; i <= 100; i++) {
             facts.put(NUMBER_FACT, i);

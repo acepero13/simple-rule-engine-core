@@ -3,7 +3,7 @@ package com.acepero13.research.ruleengine.core.proxy;
 import com.acepero13.research.ruleengine.annotations.Action;
 import com.acepero13.research.ruleengine.annotations.Condition;
 import com.acepero13.research.ruleengine.api.Rule;
-import com.acepero13.research.ruleengine.model.Facts;
+import com.acepero13.research.ruleengine.model.InMemoryFacts;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -78,7 +78,7 @@ public class RuleProxy implements InvocationHandler {
             logger.warn(e.getMessage());
         }
 
-        if (facts.length != 1 || !(facts[0] instanceof Facts)) {
+        if (facts.length != 1 || !(facts[0] instanceof InMemoryFacts)) {
             logger.error("Cannot execute rule. There are unknown arguments");
             return;
         }

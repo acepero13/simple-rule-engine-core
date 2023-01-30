@@ -4,7 +4,8 @@ import com.acepero13.research.ruleengine.api.Rule;
 import com.acepero13.research.ruleengine.api.RuleEngine;
 import com.acepero13.research.ruleengine.api.RulesEventsListener;
 
-import com.acepero13.research.ruleengine.model.Facts;
+import com.acepero13.research.ruleengine.api.Facts;
+import com.acepero13.research.ruleengine.model.InMemoryFacts;
 import com.acepero13.research.ruleengine.model.Rules;
 import com.acepero13.research.ruleengine.model.rules.RuleBuilder;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DefaultRuleEngineTest implements RulesEventsListener {
 
-    private Facts facts = new Facts();
+    private InMemoryFacts facts = new InMemoryFacts();
     private final List<Rule> before = new ArrayList<>();
     private final List<Rule> after = new ArrayList<>();
 
