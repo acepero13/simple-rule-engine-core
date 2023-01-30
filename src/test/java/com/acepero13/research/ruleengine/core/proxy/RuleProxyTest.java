@@ -4,6 +4,7 @@ import com.acepero13.research.ruleengine.annotations.Action;
 import com.acepero13.research.ruleengine.annotations.Condition;
 import com.acepero13.research.ruleengine.annotations.Fact;
 import com.acepero13.research.ruleengine.annotations.Rule;
+import com.acepero13.research.ruleengine.api.Facts;
 import com.acepero13.research.ruleengine.model.InMemoryFacts;
 import com.acepero13.research.ruleengine.model.rules.RuleBuilder;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ class RuleProxyTest {
     @Test
     void evaluate() {
         var rule = RuleBuilder.of(new TestRule());
-        InMemoryFacts facts = new InMemoryFacts();
+        Facts facts = new InMemoryFacts();
         facts.put("number", 7);
         assertTrue(rule.evaluates(facts));
     }
@@ -54,7 +55,7 @@ class RuleProxyTest {
     @Test
     void executesAction() throws Exception {
         var rule = RuleBuilder.of(new TestRule());
-        InMemoryFacts facts = new InMemoryFacts();
+        Facts facts = new InMemoryFacts();
         facts.put("number", 7);
         rule.execute(facts);
         assertEquals(7, numbers.get(0));

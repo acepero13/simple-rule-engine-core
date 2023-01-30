@@ -5,7 +5,6 @@ import com.acepero13.research.ruleengine.api.Rule;
 import com.acepero13.research.ruleengine.api.RuleEngine;
 import com.acepero13.research.ruleengine.api.RulesEventsListener;
 import com.acepero13.research.ruleengine.api.Facts;
-import com.acepero13.research.ruleengine.model.InMemoryFacts;
 import com.acepero13.research.ruleengine.model.Rules;
 import lombok.Builder;
 import lombok.Data;
@@ -35,7 +34,7 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
     }
 
     @Override
-    public void fire(final Rules rules, final InMemoryFacts facts) {
+    public void fire(final Rules rules, final Facts facts) {
         Objects.requireNonNull(rules, "Rules cannot be empty");
         Objects.requireNonNull(facts, "Facts cannot be null");
 
@@ -73,7 +72,7 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
     }
 
     @Override
-    public void fire(InMemoryFacts facts) {
+    public void fire(Facts facts) {
         fire(this.rules, facts);
     }
 

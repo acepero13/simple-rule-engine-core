@@ -1,9 +1,6 @@
 package com.acepero13.research.ruleengine.test;
 
-import com.acepero13.research.ruleengine.api.Action;
-import com.acepero13.research.ruleengine.api.Condition;
-import com.acepero13.research.ruleengine.api.Rule;
-import com.acepero13.research.ruleengine.api.RuleEngine;
+import com.acepero13.research.ruleengine.api.*;
 import com.acepero13.research.ruleengine.core.DefaultRuleEngine;
 import com.acepero13.research.ruleengine.model.InMemoryFacts;
 import com.acepero13.research.ruleengine.model.Rules;
@@ -18,7 +15,7 @@ public class TemperatureTest {
 
     @Test
     void testTemperature() {
-        InMemoryFacts facts = new InMemoryFacts();
+        Facts facts = new InMemoryFacts();
         facts.put(TEMP_FACT, 30);
         Rule airConditionRule = new RuleBuilder()
                 .name("air conditioning")

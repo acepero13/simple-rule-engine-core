@@ -1,5 +1,6 @@
 package com.acepero13.research.ruleengine.model;
 
+import com.acepero13.research.ruleengine.api.Facts;
 import com.acepero13.research.ruleengine.api.Rule;
 import com.acepero13.research.ruleengine.model.rules.RuleBuilder;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ class RuleBuilderTest {
 
     @Test
     void createSimpleRule() {
-        InMemoryFacts realFacts = new InMemoryFacts();
+        Facts realFacts = new InMemoryFacts();
         realFacts.put("test", 1);
         AtomicBoolean value = new AtomicBoolean(false);
         Rule rule = new RuleBuilder()

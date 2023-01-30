@@ -4,6 +4,7 @@ import com.acepero13.research.ruleengine.annotations.Action;
 import com.acepero13.research.ruleengine.annotations.Condition;
 import com.acepero13.research.ruleengine.annotations.Fact;
 import com.acepero13.research.ruleengine.annotations.Rule;
+import com.acepero13.research.ruleengine.api.Facts;
 import com.acepero13.research.ruleengine.api.RuleEngine;
 import com.acepero13.research.ruleengine.core.DefaultRuleEngine;
 import com.acepero13.research.ruleengine.model.InMemoryFacts;
@@ -31,7 +32,7 @@ public class FizzBuzzWithAnnotationsTests {
 
         ).register(RuleBuilder.of(new NonFizzBuzzRule(result)));
         RuleEngine engine = new DefaultRuleEngine(rules);
-        InMemoryFacts facts = new InMemoryFacts();
+        Facts facts = new InMemoryFacts();
 
         for (int i = 1; i <= 100; i++) {
             facts.put(NUMBER_FACT, i);

@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DefaultRuleEngineTest implements RulesEventsListener {
 
-    private InMemoryFacts facts = new InMemoryFacts();
+    private Facts facts = new InMemoryFacts();
     private final List<Rule> before = new ArrayList<>();
     private final List<Rule> after = new ArrayList<>();
 

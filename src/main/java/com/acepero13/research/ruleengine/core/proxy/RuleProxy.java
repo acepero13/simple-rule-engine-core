@@ -2,8 +2,8 @@ package com.acepero13.research.ruleengine.core.proxy;
 
 import com.acepero13.research.ruleengine.annotations.Action;
 import com.acepero13.research.ruleengine.annotations.Condition;
+import com.acepero13.research.ruleengine.api.Facts;
 import com.acepero13.research.ruleengine.api.Rule;
-import com.acepero13.research.ruleengine.model.InMemoryFacts;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -78,7 +78,7 @@ public class RuleProxy implements InvocationHandler {
             logger.warn(e.getMessage());
         }
 
-        if (facts.length != 1 || !(facts[0] instanceof InMemoryFacts)) {
+        if (facts.length != 1 || !(facts[0] instanceof Facts)) {
             logger.error("Cannot execute rule. There are unknown arguments");
             return;
         }
@@ -86,8 +86,7 @@ public class RuleProxy implements InvocationHandler {
             method.invoke(target, facts[0]);
         } catch (IllegalAccessException | InvocationTargetException | IllegalStateException e) {
             logger.error("Error invoking method: execute", e);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error("ERROR happened", e);
         }
     }

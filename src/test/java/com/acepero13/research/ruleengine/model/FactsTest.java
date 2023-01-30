@@ -1,12 +1,13 @@
 package com.acepero13.research.ruleengine.model;
 
+import com.acepero13.research.ruleengine.api.Facts;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class FactsTest {
 
-    private final InMemoryFacts facts = new InMemoryFacts();
+    private final Facts facts = new InMemoryFacts();
 
     @Test
     void addAndRetrieveFacts() {

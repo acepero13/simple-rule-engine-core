@@ -3,6 +3,7 @@ package com.acepero13.research.ruleengine.core;
 import com.acepero13.research.ruleengine.annotations.Action;
 import com.acepero13.research.ruleengine.annotations.Condition;
 import com.acepero13.research.ruleengine.annotations.Fact;
+import com.acepero13.research.ruleengine.api.Facts;
 import com.acepero13.research.ruleengine.api.Rule;
 import com.acepero13.research.ruleengine.api.RuleEngine;
 import com.acepero13.research.ruleengine.model.InMemoryFacts;
@@ -35,7 +36,7 @@ class ForwardChainEngineTest {
                 .build();
 
         Rules rules = new Rules(IfBThenC, IfAThenB);
-        InMemoryFacts facts = new InMemoryFacts();
+        Facts facts = new InMemoryFacts();
         facts.put("A", "A");
 
         RuleEngine engine = new ForwardChainEngine(rules);
@@ -50,12 +51,12 @@ class ForwardChainEngineTest {
     void inferFrogColor() {
 
         Rules rules = new Rules(
-                RuleBuilder.of(new IsAFrog()),
-                RuleBuilder.of(new IsACanary()),
-                RuleBuilder.of(new IfFrogGreen()),
-                RuleBuilder.of(new IfCanaryBlue())
+                RuleBuilder.of(new IsAFrogRule()),
+                RuleBuilder.of(new IsACanaryRule()),
+                RuleBuilder.of(new FrogIsGreenRule()),
+                RuleBuilder.of(new CanaryIsBlueRule())
         );
-        InMemoryFacts facts = new InMemoryFacts();
+        Facts facts = new InMemoryFacts();
         facts.put("croaks", true);
         facts.put("eats", EAT.FLIES);
 
@@ -72,54 +73,54 @@ class ForwardChainEngineTest {
     @com.acepero13.research.ruleengine.annotations.Rule(name = "It is a Frog")
     @ToString
     @EqualsAndHashCode
-    private static class IsAFrog {
+    private static class IsAFrogRule {
         @Condition
         boolean when(@Fact("croaks") boolean croaks, @Fact("eats") EAT eats) {
             return croaks && eats == EAT.FLIES;
         }
 
         @Action
-        void then(InMemoryFacts facts) {
+        void then(Facts facts) {
             facts.put("animal", new Frog());
         }
     }
 
     @com.acepero13.research.ruleengine.annotations.Rule(name = "It is a canary")
-    private static class IsACanary {
+    private static class IsACanaryRule {
         @Condition
         boolean when(@Fact("chirps") boolean chirps, @Fact("sings") boolean signs) {
             return chirps && signs;
         }
 
         @Action
-        void then(InMemoryFacts facts) {
+        void then(Facts facts) {
             facts.put("animal", new Canary());
         }
     }
 
     @com.acepero13.research.ruleengine.annotations.Rule(name = "If frog then is green")
     @EqualsAndHashCode
-    private static class IfFrogGreen {
+    private static class FrogIsGreenRule {
         @Condition
         public boolean when(@Fact("animal") Animal animal) {
             return animal instanceof Frog;
         }
 
         @Action
-        void then(InMemoryFacts facts) {
+        void then(Facts facts) {
             facts.updatesIfExists("animal", Animal.class, (Animal a) -> a.setColor(Color.GREEN));
         }
     }
 
     @com.acepero13.research.ruleengine.annotations.Rule(name = "If canary then is blue")
-    private static class IfCanaryBlue {
+    private static class CanaryIsBlueRule {
         @Condition
         boolean when(@Fact("animal") Animal animal) {
             return animal instanceof Canary;
         }
 
         @Action
-        void then(InMemoryFacts facts) {
+        void then(Facts facts) {
             facts.updatesIfExists("animal", Animal.class, a -> a.setColor(Color.BLUE));
         }
     }

@@ -1,5 +1,6 @@
 package com.acepero13.research.ruleengine.test;
 
+import com.acepero13.research.ruleengine.api.Facts;
 import com.acepero13.research.ruleengine.api.Rule;
 import com.acepero13.research.ruleengine.api.RuleEngine;
 import com.acepero13.research.ruleengine.core.DefaultRuleEngine;
@@ -26,7 +27,7 @@ public class FizzBuzzTest {
         Rules rules = createRules();
 
         RuleEngine engine = new DefaultRuleEngine(rules);
-        InMemoryFacts facts = new InMemoryFacts();
+        Facts facts = new InMemoryFacts();
 
         for (int i = 1; i <= 100; i++) {
             facts.put(NUMBER_FACT, i);
