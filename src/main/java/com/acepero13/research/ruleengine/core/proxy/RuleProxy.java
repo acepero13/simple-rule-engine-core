@@ -75,7 +75,7 @@ public class RuleProxy implements InvocationHandler {
             tryToExecute(method, facts);
             return;
         } catch (AnnotationHelper.ArgumentMismatchException e) {
-            logger.warn("Could not find some facts in the fact base. Trying another method: {}", facts);
+            logger.warn(e.getMessage());
         }
 
         if (facts.length != 1 || !(facts[0] instanceof Facts)) {

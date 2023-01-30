@@ -48,14 +48,26 @@ public class AnnotationHelper {
                 .collect(Collectors.toList());
 
         if (parameters.size() != methodParameters.length) {
-            throw new ArgumentMismatchException("Could not find some facts in the fact base: " + myFacts);
+            throw new ArgumentMismatchException(buildErrorMessage(myFacts, methodParameters));
         }
         return parameters;
 
 
     }
 
-    public static class ArgumentMismatchException extends RuntimeException{
+    private static String buildErrorMessage(Facts myFacts, Parameter[] methodParameters) {
+        var paramFacts = Arrays.stream(methodParameters)
+                .filter(p -> p.isAnnotationPresent(Fact.class))
+                .map(p -> (Fact) p.getAnnotations()[0])
+                .map(Fact::value)
+                .collect(Collectors.toList());
+        String missingFacts = paramFacts.stream()
+                .filter(f -> !myFacts.exists(f))
+                .collect(Collectors.joining(", "));
+        return "Could not find some facts in the fact base. Missing facts: " + missingFacts + ". Fact base: " + myFacts;
+    }
+
+    public static class ArgumentMismatchException extends RuntimeException {
 
         public ArgumentMismatchException(String msg) {
             super(msg);

@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 @ToString
 public class Facts implements Iterable<Fact<?>> {
@@ -103,5 +104,18 @@ public class Facts implements Iterable<Fact<?>> {
 
     public <T> Optional<T> get(String factName, Class<T> type) {
         return getFact(factName).map(Fact::getValue).filter(type::isInstance).map(type::cast);
+    }
+
+    public <T> void updatesIfExists(String factName, Class<T> type, UnaryOperator<T> func) {
+        getFact(factName)
+                .map(Fact::getValue)
+                .filter(type::isInstance).map(type::cast)
+                .ifPresent(v -> {
+                    put(factName, func.apply(v));
+                });
+    }
+
+    public boolean exists(String factName) {
+        return facts.contains(factName);
     }
 }

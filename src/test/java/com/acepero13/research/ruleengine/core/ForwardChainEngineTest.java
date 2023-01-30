@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ForwardChainEngineTest {
     private static final Logger logger = LogManager.getLogger();
+
     @Test
     void inference() {
         Rule IfAThenB = new RuleBuilder()
@@ -106,11 +107,7 @@ class ForwardChainEngineTest {
 
         @Action
         void then(Facts facts) {
-            facts.get("animal", Animal.class)
-                    .ifPresent(a -> {
-                        a.setColor(Color.GREEN);
-                        facts.put("animal", a);
-                    });
+            facts.updatesIfExists("animal", Animal.class, (Animal a) -> a.setColor(Color.GREEN));
         }
     }
 
@@ -123,11 +120,7 @@ class ForwardChainEngineTest {
 
         @Action
         void then(Facts facts) {
-            facts.get("animal", Animal.class)
-                    .ifPresent(a -> {
-                        a.setColor(Color.BLUE);
-                        facts.put("animal", a);
-                    });
+            facts.updatesIfExists("animal", Animal.class, a -> a.setColor(Color.BLUE));
         }
     }
 
@@ -138,6 +131,11 @@ class ForwardChainEngineTest {
 
         private Color color;
         private String name;
+
+        public Animal setColor(Color color) {
+            this.color = color;
+            return this;
+        }
 
 
     }

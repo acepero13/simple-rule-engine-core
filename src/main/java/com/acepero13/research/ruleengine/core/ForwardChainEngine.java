@@ -22,7 +22,7 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
     private final ForwardChainEngineParameters params;
     private final List<RulesEventsListener> listeners = new ArrayList<>();
     private final Rules rules;
-    private final List<String> newFacts = new CopyOnWriteArrayList<>();
+    private final List<String> newFacts = new ArrayList<>();
     private final List<String> updatedFacts = new ArrayList<>();
 
     public ForwardChainEngine(Rules rules) {
@@ -39,7 +39,7 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
         Objects.requireNonNull(rules, "Rules cannot be empty");
         Objects.requireNonNull(facts, "Facts cannot be null");
 
-        logger.debug("starting forward chaining rule evaluation with the following facts: {}", facts);
+        logger.debug("#### Starting forward chaining rule evaluation with the following facts: {}", facts);
 
         facts.register(this);
 
@@ -49,7 +49,7 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
         } while (thereAreStillRulesToConsider(agenda));
 
         facts.unregister(this);
-        logger.debug("Finished evaluating rules. Facts based after evaluation: {}", facts);
+        logger.debug("#### Finished evaluating rules. Facts based after evaluation: {}", facts);
     }
 
     private List<Rule> doFire(Rules rules, Facts facts) {
@@ -66,7 +66,7 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
     }
 
     private void executeAgenda(Facts facts, List<Rule> agenda) {
-        logger.debug("Executing the following agenda: {}, with facts: {}", agenda, facts);
+        logger.debug("#### Executing the following agenda: {}, with facts: {}", agenda, facts);
         for (Rule rule : agenda) {
             tryToFire(facts, rule);
         }
@@ -100,10 +100,10 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
         List<Rule> agenda = new ArrayList<>();
         for (Rule rule : rules) {
             if (evaluationSucceeded(facts, rule)) {
-                logger.debug("Activated rule: {}", rule);
+                logger.debug("#### Activated rule: {}", rule);
                 agenda.add(rule);
             }else {
-                logger.debug("Rule {} failed", rule);
+                logger.debug("#### Rule {} failed", rule);
             }
         }
         return agenda;
@@ -142,7 +142,7 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
 
     @Override
     public <T> void newFactAdded(String name, T value) {
-        logger.debug("New fact {} added to ForwardEngine with value{} ", name, value);
+        logger.debug("New fact {} added to ForwardEngine with value: {} ", name, value);
         this.newFacts.add(name);
     }
 
