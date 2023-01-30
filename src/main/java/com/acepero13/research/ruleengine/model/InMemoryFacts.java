@@ -26,7 +26,7 @@ public class InMemoryFacts implements Facts {
         boolean valueExists = opFact.isPresent();
         Object oldValue = opFact.map(Fact::getValue).orElse(null);
         removeAnNotify(name, value, valueExists, oldValue);
-        add(new Fact<T>(name, value));
+        add(new Fact<>(name, value));
     }
 
 
@@ -124,13 +124,11 @@ public class InMemoryFacts implements Facts {
         getFact(factName)
                 .map(Fact::getValue)
                 .filter(type::isInstance).map(type::cast)
-                .ifPresent(v -> {
-                    put(factName, func.apply(v));
-                });
+                .ifPresent(v -> put(factName, func.apply(v)));
     }
 
     @Override
     public boolean exists(String factName) {
-        return facts.contains(factName);
+        return facts.stream().anyMatch(f -> f.matchesName(factName));
     }
 }
