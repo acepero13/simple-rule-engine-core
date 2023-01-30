@@ -1,13 +1,15 @@
-package com.acepero13.research.ruleengine.core;
+package com.acepero13.research.ruleengine.core.engines;
 
 import com.acepero13.research.ruleengine.api.FactBaseListener;
 import com.acepero13.research.ruleengine.api.Rule;
 import com.acepero13.research.ruleengine.api.RuleEngine;
 import com.acepero13.research.ruleengine.api.RulesEventsListener;
 import com.acepero13.research.ruleengine.api.Facts;
+import com.acepero13.research.ruleengine.core.utils.LoggingUtils;
 import com.acepero13.research.ruleengine.model.Rules;
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,7 +40,12 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
         Objects.requireNonNull(rules, "Rules cannot be empty");
         Objects.requireNonNull(facts, "Facts cannot be null");
 
-        logger.debug("#### Starting forward chaining rule evaluation with the following facts: {}", facts);
+
+        logger.info("Engine parameters: {}", params);
+        logger.info("Registered rules:");
+        LoggingUtils.logIterable(rules, logger);
+        logger.info("Known facts:");
+        LoggingUtils.logIterable(facts, logger);
 
         facts.register(this);
 
@@ -48,7 +55,7 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
         } while (thereAreStillRulesToConsider(agenda));
 
         facts.unregister(this);
-        logger.debug("#### Finished evaluating rules. Facts based after evaluation: {}", facts);
+        logger.info("Finished evaluating rules. Facts based after evaluation: {}", facts);
     }
 
     private List<Rule> doFire(Rules rules, Facts facts) {
@@ -65,7 +72,7 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
     }
 
     private void executeAgenda(Facts facts, List<Rule> agenda) {
-        logger.debug("#### Executing the following agenda: {}, with facts: {}", agenda, facts);
+        logger.info("#### Executing the following agenda: {}, with facts: {}", agenda, facts);
         for (Rule rule : agenda) {
             tryToFire(facts, rule);
         }
@@ -96,13 +103,15 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
     }
 
     private List<Rule> selectActiveRules(Rules rules, Facts facts) {
+        logger.info("Evaluation started: ");
         List<Rule> agenda = new ArrayList<>();
+
         for (Rule rule : rules) {
             if (evaluationSucceeded(facts, rule)) {
-                logger.debug("#### Activated rule: {}", rule);
+                logger.info("Rule: '{}' is activated", rule);
                 agenda.add(rule);
             } else {
-                logger.debug("#### Rule {} failed", rule);
+                logger.info("Rule: '{}' is NOT activated ", rule);
             }
         }
         return agenda;
@@ -152,6 +161,7 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
 
     @Data
     @Builder
+    @ToString
     public static class ForwardChainEngineParameters {
         private final int priorityThreshold;
         private final boolean considerNewFacts;

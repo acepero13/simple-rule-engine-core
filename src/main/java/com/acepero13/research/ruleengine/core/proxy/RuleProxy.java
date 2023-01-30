@@ -42,7 +42,7 @@ public class RuleProxy implements InvocationHandler {
             case "equals":
                 return objectEquals(target, args[0]);
             case "toString":
-                return objectToString(target);
+                return objectToString();
             case "hashCode":
                 return objectHashCode(target);
             case "compareTo":
@@ -162,8 +162,8 @@ public class RuleProxy implements InvocationHandler {
         return obj == other;
     }
 
-    public String objectToString(Object obj) {
-        return objectClassName(obj) + '@' + Integer.toHexString(objectHashCode(obj));
+    public String objectToString() {
+        return "Rule { name = " + getRuleName() + "; description = " + getDescription() + "}";
     }
 
 

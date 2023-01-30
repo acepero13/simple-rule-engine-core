@@ -4,7 +4,6 @@ import com.acepero13.research.ruleengine.api.Rule;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@ToString
 @EqualsAndHashCode
 abstract class BasicRule implements Rule {
     public static final int DEFAULT_PRIORITY = Integer.MAX_VALUE;
@@ -49,5 +48,10 @@ abstract class BasicRule implements Rule {
     @Override
     public int compareTo(Rule o) {
         return Integer.compare(o.priority(), priority);
+    }
+
+    @Override
+    public String toString(){
+        return name + " Rule";
     }
 }

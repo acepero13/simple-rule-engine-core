@@ -1,9 +1,10 @@
-package com.acepero13.research.ruleengine.core;
+package com.acepero13.research.ruleengine.core.engines;
 
 import com.acepero13.research.ruleengine.api.RuleEngine;
 import com.acepero13.research.ruleengine.api.RulesEventsListener;
 import com.acepero13.research.ruleengine.api.Facts;
 import com.acepero13.research.ruleengine.api.Rule;
+import com.acepero13.research.ruleengine.core.utils.LoggingUtils;
 import com.acepero13.research.ruleengine.model.Rules;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,7 +62,18 @@ public class DefaultRuleEngine implements RuleEngine {
     }
 
     private void doFire(Rules rules, Facts facts) {
-        logger.debug("starting forward chaining rule evaluation with the following facts: {}", facts);
+        logger.info("Engine parameters: {}", params);
+        logger.info("Registered rules:");
+        LoggingUtils.logIterable(rules, logger);
+        logger.info("Known facts:");
+        LoggingUtils.logIterable(facts, logger);
+
+        executeAgenda(rules, facts);
+
+        logger.info("Finished evaluating rules. Facts based after evaluation: {}", facts);
+    }
+
+    private void executeAgenda(Rules rules, Facts facts) {
         for (Rule rule : rules) {
             if (shouldSkip(rule, facts)) {
                 logger.debug("Skipping rule: {}. With facts: {}", rule, facts);
@@ -75,7 +87,9 @@ public class DefaultRuleEngine implements RuleEngine {
                 logger.debug("Evaluation of rule: {}. With facts: {}. Continuing evaluation", rule, facts);
                 continue;
             }
+            logger.info("Rule: '{}' is activated", rule);
             boolean result = execute(facts, rule);
+            logger.info("Firing rule: '{}'", rule);
             if (shouldStopExecutionAfter(result)) {
                 logger.debug("Stop executing rules because isSkipOnFirstAppliedRule flag is activated and rule was executed successfully.");
                 break;

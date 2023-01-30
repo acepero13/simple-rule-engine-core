@@ -1,7 +1,7 @@
 package com.acepero13.research.ruleengine.test;
 
 import com.acepero13.research.ruleengine.api.*;
-import com.acepero13.research.ruleengine.core.DefaultRuleEngine;
+import com.acepero13.research.ruleengine.core.engines.DefaultRuleEngine;
 import com.acepero13.research.ruleengine.model.InMemoryFacts;
 import com.acepero13.research.ruleengine.model.Rules;
 import com.acepero13.research.ruleengine.model.rules.RuleBuilder;
