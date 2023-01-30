@@ -2,12 +2,10 @@ package com.acepero13.research.ruleengine.model.rules;
 
 import com.acepero13.research.ruleengine.api.Rule;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 @EqualsAndHashCode
 abstract class BasicRule implements Rule {
     public static final int DEFAULT_PRIORITY = Integer.MAX_VALUE;
-    public static final String DEFAULT_DESCRIPTION = "no description";
     private final String name;
     private final String description;
     private final int priority;
@@ -16,18 +14,6 @@ abstract class BasicRule implements Rule {
         this.name = name;
         this.description = description;
         this.priority = priority;
-    }
-
-    public BasicRule(String name) {
-        this(name, DEFAULT_DESCRIPTION, DEFAULT_PRIORITY);
-    }
-
-    public BasicRule(String name, String description) {
-        this(name, description, DEFAULT_PRIORITY);
-    }
-
-    public BasicRule(String name, int priority) {
-        this(name, DEFAULT_DESCRIPTION, priority);
     }
 
     @Override
@@ -51,7 +37,7 @@ abstract class BasicRule implements Rule {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return name + " Rule";
     }
 }

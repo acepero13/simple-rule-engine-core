@@ -27,6 +27,6 @@ public class Fact<T> {
 
     public boolean matchesName(String name) {
         Objects.requireNonNull(name, "Fact name should not be null");
-        return name.equals(this.name);
+        return name.equals(name());
     }
 }

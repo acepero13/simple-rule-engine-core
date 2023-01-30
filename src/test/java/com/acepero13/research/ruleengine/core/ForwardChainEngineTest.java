@@ -6,6 +6,7 @@ import com.acepero13.research.ruleengine.annotations.Fact;
 import com.acepero13.research.ruleengine.annotations.Rule;
 import com.acepero13.research.ruleengine.api.Facts;
 import com.acepero13.research.ruleengine.api.RuleEngine;
+import com.acepero13.research.ruleengine.api.RulesEventsListener;
 import com.acepero13.research.ruleengine.core.engines.ForwardChainEngine;
 import com.acepero13.research.ruleengine.model.InMemoryFacts;
 import com.acepero13.research.ruleengine.model.Rules;
@@ -17,14 +18,91 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ForwardChainEngineTest {
+class ForwardChainEngineTest implements RulesEventsListener {
+
+    private final List<com.acepero13.research.ruleengine.api.Rule> evaluationFailures = new ArrayList<>();
+    private List<com.acepero13.research.ruleengine.api.Rule> executionFailures = new ArrayList<>();
 
     @Test
-    void stopOnCondition(){
+    void testFailingExecution() {
+        var IfAThenB = new RuleBuilder()
+                .name("A -> B")
+                .when(facts -> facts.get("A").isPresent())
+                .then(facts -> {
+                    throw new RuntimeException("Error");
+                })
+                .build();
+
+        Rules rules = new Rules(IfAThenB);
+        Facts facts = new InMemoryFacts();
+        facts.put("A", "A");
+        RuleEngine engine = new ForwardChainEngine(rules);
+        engine.register(this);
+        engine.fire(facts);
+        assertEquals(1, executionFailures.size());
+        engine.unregister(this);
+
+    }
+
+    @Test
+    void testListeners() {
+        var IfAThenB = new RuleBuilder()
+                .name("A -> B")
+                .when(facts -> facts.get("A").isPresent())
+                .then(facts -> facts.put("B", "B"))
+                .build();
+
+        Rules rules = new Rules(IfAThenB);
+        Facts facts = new InMemoryFacts();
+        facts.put("A", "A");
+
+        RuleEngine engine = new ForwardChainEngine(rules);
+        var before = new ArrayList<String>();
+        var after = new ArrayList<String>();
+        RulesEventsListener listener = new RulesEventsListener() {
+            @Override
+            public void beforeFire(com.acepero13.research.ruleengine.api.Rule rule) {
+                before.add(rule.name());
+            }
+
+            @Override
+            public void afterFire(com.acepero13.research.ruleengine.api.Rule rule) {
+                after.add(rule.name());
+            }
+
+            @Override
+            public void evaluationFailed(com.acepero13.research.ruleengine.api.Rule rule, Facts facts) {
+
+            }
+
+            @Override
+            public void executionFailed(com.acepero13.research.ruleengine.api.Rule rule, Facts facts) {
+
+            }
+        };
+        engine.register(listener);
+        engine.fire(facts);
+
+        engine.unregister(listener);
+        assertEquals(2, before.size());
+        assertEquals(2, after.size());
+    }
+
+    @Test
+    void testParameters() {
+        ForwardChainEngine engine = new ForwardChainEngine(new Rules(RuleBuilder.of(new IsAFrogRule())));
+        assertEquals(ForwardChainEngine.ForwardChainEngineParameters.defaultParameters(), engine.getParameters());
+    }
+
+
+    @Test
+    void stopOnCondition() {
         var IfAThenB = new RuleBuilder()
                 .name("A -> B")
                 .when(facts -> facts.get("A").isPresent())
@@ -47,6 +125,7 @@ class ForwardChainEngineTest {
         var params = ForwardChainEngine.ForwardChainEngineParameters
                 .builder()
                 .stopOnCondition(f -> f.exists("C"))
+                .considerUpdatesFacts(true)
                 .build();
 
         RuleEngine engine = new ForwardChainEngine(rules, params);
@@ -77,6 +156,7 @@ class ForwardChainEngineTest {
 
         RuleEngine engine = new ForwardChainEngine(rules);
         engine.fire(facts);
+        engine.unregisterAll();
 
         String actual = facts.get("C", String.class, "");
         assertEquals("C", actual);
@@ -104,6 +184,26 @@ class ForwardChainEngineTest {
         assertEquals(Color.GREEN, inferred.getColor());
 
 
+    }
+
+    @Override
+    public void beforeFire(com.acepero13.research.ruleengine.api.Rule rule) {
+
+    }
+
+    @Override
+    public void afterFire(com.acepero13.research.ruleengine.api.Rule rule) {
+
+    }
+
+    @Override
+    public void evaluationFailed(com.acepero13.research.ruleengine.api.Rule rule, Facts facts) {
+        this.evaluationFailures.add(rule);
+    }
+
+    @Override
+    public void executionFailed(com.acepero13.research.ruleengine.api.Rule rule, Facts facts) {
+        this.executionFailures.add(rule);
     }
 
     @Rule(name = "croaks and eat flies -> It is a frog")

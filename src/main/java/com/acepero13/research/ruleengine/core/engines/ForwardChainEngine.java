@@ -126,6 +126,7 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
         try {
             return rule.evaluates(facts);
         } catch (Exception e) {
+            listeners.forEach(l -> l.evaluationFailed(rule, facts));
             logFailure(e, rule);
             return false;
         }
@@ -140,6 +141,7 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
             rule.execute(facts);
             listeners.forEach(l -> l.afterFire(rule));
         } catch (Exception e) {
+            listeners.forEach(l -> l.executionFailed(rule, facts));
             logFailure(e, rule);
         }
     }

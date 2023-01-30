@@ -1,10 +1,12 @@
 package com.acepero13.research.ruleengine.core.engines;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Builder
 @Getter
+@EqualsAndHashCode
 public class EngineParameters {
 
     private final int priorityThreshold;

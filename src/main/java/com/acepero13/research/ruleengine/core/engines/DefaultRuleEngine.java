@@ -20,7 +20,7 @@ public class DefaultRuleEngine implements RuleEngine {
     private final EngineParameters params;
 
     public DefaultRuleEngine(Rules rules) {
-        this(Objects.requireNonNull(rules), EngineParameters.defaultParameters());
+        this(Objects.requireNonNull(rules, "Rules cannot be null"), EngineParameters.defaultParameters());
     }
 
     public DefaultRuleEngine(Rules rules, EngineParameters parameters) {
@@ -35,7 +35,7 @@ public class DefaultRuleEngine implements RuleEngine {
 
     @Override
     public void fire(Facts facts) {
-        doFire(rules, facts);
+        fire(rules, facts);
     }
 
     @Override
@@ -54,10 +54,6 @@ public class DefaultRuleEngine implements RuleEngine {
     }
 
     public EngineParameters getParameters() {
-        return params;
-    }
-
-    public EngineParameters getParams() {
         return params;
     }
 

@@ -7,6 +7,7 @@ import com.acepero13.research.ruleengine.api.RulesEventsListener;
 import com.acepero13.research.ruleengine.api.Facts;
 import com.acepero13.research.ruleengine.core.engines.DefaultRuleEngine;
 import com.acepero13.research.ruleengine.core.engines.EngineParameters;
+import com.acepero13.research.ruleengine.model.FactsOperation;
 import com.acepero13.research.ruleengine.model.InMemoryFacts;
 import com.acepero13.research.ruleengine.model.Rules;
 import com.acepero13.research.ruleengine.model.rules.RuleBuilder;
@@ -14,6 +15,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -31,11 +34,25 @@ class DefaultRuleEngineTest implements RulesEventsListener {
     void fireRules() {
         // create a rules engine and fire rules on known facts
         Rules rules = Rules.of(createRule());
+        AtomicReference<FactsOperation> op = new AtomicReference<>();
+        facts.registerNotificationsFor("test", op::set);
         facts.put("test", 1);
+        System.out.println("rules = " + rules);
 
         RuleEngine rulesEngine = new DefaultRuleEngine(rules);
 
         rulesEngine.fire(facts);
+        rulesEngine.unregisterAll();
+        assertEquals(FactsOperation.CREATE, op.get());
+        facts.unregisterAll();
+    }
+
+    @Test
+    void defaultParameters() {
+
+
+        DefaultRuleEngine rulesEngine = new DefaultRuleEngine(Rules.of(createRule()));
+        assertEquals(EngineParameters.defaultParameters(), rulesEngine.getParameters());
     }
 
     @Test
@@ -48,6 +65,7 @@ class DefaultRuleEngineTest implements RulesEventsListener {
         rulesEngine.fire(facts);
         assertEquals("alwaysFire", before.get(0).name());
         assertEquals("alwaysFire", after.get(0).name());
+        rulesEngine.unregister(this);
     }
 
     @Test
@@ -60,6 +78,19 @@ class DefaultRuleEngineTest implements RulesEventsListener {
         rulesEngine.fire(facts);
         assertEquals("alwaysFire", before.get(0).name());
         assertEquals("alwaysFire", after.get(0).name());
+    }
+
+    @Test
+    void registrationListeners() {
+        Rules rules = Rules.of(createAlwaysFire(1), createRule());
+        facts.put("test", 0);
+
+        RuleEngine rulesEngine = new DefaultRuleEngine(rules);
+        rulesEngine.register(this);
+        rulesEngine.unregister(this);
+        rulesEngine.fire(facts);
+        assertEquals(0, before.size());
+        assertEquals(0, after.size());
     }
 
     @Test
