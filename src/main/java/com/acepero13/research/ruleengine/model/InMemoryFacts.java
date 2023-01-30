@@ -89,8 +89,24 @@ public class InMemoryFacts implements Facts {
 
 
     @Override
+
     public <T> Optional<T> get(String factName) {
-        return getFact(factName).map(f -> (T) f.getValue());
+        Optional<Fact<?>> opFact = getFact(factName);
+        if (opFact.isPresent()) {
+            Fact<?> fact = opFact.get();
+            return tryToCastFactValue(fact);
+        }
+        return Optional.empty();
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Optional<T> tryToCastFactValue(Fact<?> fact) {
+        try {
+            return Optional.ofNullable((T) fact.getValue());
+        } catch (Exception e) {
+            logger.error("Could not cast value. Check the types match", e);
+            return Optional.empty();
+        }
     }
 
     @Override

@@ -16,9 +16,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SuppressWarnings("SameParameterValue")
 class DefaultRuleEngineTest implements RulesEventsListener {
 
-    private Facts facts = new InMemoryFacts();
+    private final Facts facts = new InMemoryFacts();
     private final List<Rule> before = new ArrayList<>();
     private final List<Rule> after = new ArrayList<>();
 
@@ -98,7 +99,7 @@ class DefaultRuleEngineTest implements RulesEventsListener {
 
     @Test
     void continuesExecutionAfterFailure() {
-        Rules rules = Rules.of(createFailRule(2), createAlwaysFire(1));
+        Rules rules = Rules.of(createFailRule(3), createAlwaysFire(1));
         EngineParameters params = EngineParameters.builder()
                 .skipOnFirstFailedRule(false).build();
         facts.put("test", 0);
@@ -212,9 +213,7 @@ class DefaultRuleEngineTest implements RulesEventsListener {
                 .when(facts -> {
                     throw new RuntimeException("Failure");
                 })
-                .then(facts -> {
-                    System.out.println("facts = " + facts);
-                })
+                .then(facts -> System.out.println("facts = " + facts))
                 .build();
     }
 

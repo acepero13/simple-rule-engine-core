@@ -5,8 +5,6 @@ import com.acepero13.research.ruleengine.api.Rule;
 import com.acepero13.research.ruleengine.model.rules.RuleBuilder;
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -16,7 +14,6 @@ class RuleBuilderTest {
     void createSimpleRule() {
         Facts realFacts = new InMemoryFacts();
         realFacts.put("test", 1);
-        AtomicBoolean value = new AtomicBoolean(false);
         Rule rule = new RuleBuilder()
                 .name("SimpleRule")
                 .description("A description")

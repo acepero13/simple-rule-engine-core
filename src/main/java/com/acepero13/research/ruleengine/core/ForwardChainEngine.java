@@ -101,7 +101,7 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
             if (evaluationSucceeded(facts, rule)) {
                 logger.debug("#### Activated rule: {}", rule);
                 agenda.add(rule);
-            }else {
+            } else {
                 logger.debug("#### Rule {} failed", rule);
             }
         }
@@ -120,15 +120,13 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
     }
 
 
-    private boolean tryToFire(Facts facts, Rule rule) {
+    private void tryToFire(Facts facts, Rule rule) {
         try {
             listeners.forEach(l -> l.beforeFire(rule));
             rule.execute(facts);
             listeners.forEach(l -> l.afterFire(rule));
-            return true;
         } catch (Exception e) {
             logFailure(e, rule);
-            return false;
         }
     }
 

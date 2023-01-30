@@ -3,8 +3,8 @@ package com.acepero13.research.ruleengine.core;
 import com.acepero13.research.ruleengine.annotations.Action;
 import com.acepero13.research.ruleengine.annotations.Condition;
 import com.acepero13.research.ruleengine.annotations.Fact;
+import com.acepero13.research.ruleengine.annotations.Rule;
 import com.acepero13.research.ruleengine.api.Facts;
-import com.acepero13.research.ruleengine.api.Rule;
 import com.acepero13.research.ruleengine.api.RuleEngine;
 import com.acepero13.research.ruleengine.model.InMemoryFacts;
 import com.acepero13.research.ruleengine.model.Rules;
@@ -23,13 +23,13 @@ class ForwardChainEngineTest {
 
     @Test
     void inference() {
-        Rule IfAThenB = new RuleBuilder()
+        var IfAThenB = new RuleBuilder()
                 .name("A -> B")
                 .when(facts -> facts.get("A").isPresent())
                 .then(facts -> facts.put("B", "B"))
                 .build();
 
-        Rule IfBThenC = new RuleBuilder()
+        var IfBThenC = new RuleBuilder()
                 .name("B -> C")
                 .when(facts -> facts.get("B").isPresent())
                 .then(facts -> facts.put("C", "C"))
@@ -70,7 +70,7 @@ class ForwardChainEngineTest {
 
     }
 
-    @com.acepero13.research.ruleengine.annotations.Rule(name = "It is a Frog")
+    @Rule(name = "croaks and eat flies -> It is a frog")
     @ToString
     @EqualsAndHashCode
     private static class IsAFrogRule {
@@ -85,11 +85,11 @@ class ForwardChainEngineTest {
         }
     }
 
-    @com.acepero13.research.ruleengine.annotations.Rule(name = "It is a canary")
+    @Rule(name = "sings -> Canary", description = "If it sings, it is a canary")
     private static class IsACanaryRule {
         @Condition
-        boolean when(@Fact("chirps") boolean chirps, @Fact("sings") boolean signs) {
-            return chirps && signs;
+        boolean when(@Fact("chirps") boolean chirps, @Fact("sings") boolean sings) {
+            return chirps && sings;
         }
 
         @Action
@@ -98,7 +98,7 @@ class ForwardChainEngineTest {
         }
     }
 
-    @com.acepero13.research.ruleengine.annotations.Rule(name = "If frog then is green")
+    @Rule(name = "Frog -> color: Green", description = "If it is a frog, the color is green")
     @EqualsAndHashCode
     private static class FrogIsGreenRule {
         @Condition
@@ -112,7 +112,7 @@ class ForwardChainEngineTest {
         }
     }
 
-    @com.acepero13.research.ruleengine.annotations.Rule(name = "If canary then is blue")
+    @Rule(name = "Canary -> color: Blue", description = "If it is a canary, the color is blue")
     private static class CanaryIsBlueRule {
         @Condition
         boolean when(@Fact("animal") Animal animal) {
@@ -142,11 +142,11 @@ class ForwardChainEngineTest {
     }
 
     private enum EAT {
-        FLIES, ELSE;
+        FLIES, ELSE
     }
 
     private enum Color {
-        GREEN, BLUE;
+        GREEN, BLUE
     }
 
     @ToString
