@@ -6,7 +6,7 @@ import com.acepero13.research.ruleengine.annotations.Fact;
 import com.acepero13.research.ruleengine.annotations.Rule;
 import com.acepero13.research.ruleengine.api.Facts;
 import com.acepero13.research.ruleengine.api.RuleEngine;
-import com.acepero13.research.ruleengine.core.DefaultRuleEngine;
+import com.acepero13.research.ruleengine.core.engines.DefaultRuleEngine;
 import com.acepero13.research.ruleengine.model.InMemoryFacts;
 import com.acepero13.research.ruleengine.model.Rules;
 import com.acepero13.research.ruleengine.model.rules.RuleBuilder;

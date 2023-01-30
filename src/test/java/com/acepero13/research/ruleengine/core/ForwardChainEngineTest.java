@@ -6,6 +6,7 @@ import com.acepero13.research.ruleengine.annotations.Fact;
 import com.acepero13.research.ruleengine.api.Facts;
 import com.acepero13.research.ruleengine.api.Rule;
 import com.acepero13.research.ruleengine.api.RuleEngine;
+import com.acepero13.research.ruleengine.core.engines.ForwardChainEngine;
 import com.acepero13.research.ruleengine.model.InMemoryFacts;
 import com.acepero13.research.ruleengine.model.Rules;
 import com.acepero13.research.ruleengine.model.rules.RuleBuilder;
@@ -71,7 +72,6 @@ class ForwardChainEngineTest {
     }
 
     @com.acepero13.research.ruleengine.annotations.Rule(name = "It is a Frog")
-    @ToString
     @EqualsAndHashCode
     private static class IsAFrogRule {
         @Condition
@@ -82,6 +82,11 @@ class ForwardChainEngineTest {
         @Action
         void then(Facts facts) {
             facts.put("animal", new Frog());
+        }
+
+        @Override
+        public String toString() {
+            return "It is a Frog Rule";
         }
     }
 
@@ -95,6 +100,11 @@ class ForwardChainEngineTest {
         @Action
         void then(Facts facts) {
             facts.put("animal", new Canary());
+        }
+
+        @Override
+        public String toString() {
+            return "It is a Canary Rule";
         }
     }
 
@@ -110,6 +120,11 @@ class ForwardChainEngineTest {
         void then(Facts facts) {
             facts.updatesIfExists("animal", Animal.class, (Animal a) -> a.setColor(Color.GREEN));
         }
+
+        @Override
+        public String toString() {
+            return "Frog is green Rule";
+        }
     }
 
     @com.acepero13.research.ruleengine.annotations.Rule(name = "If canary then is blue")
@@ -122,6 +137,11 @@ class ForwardChainEngineTest {
         @Action
         void then(Facts facts) {
             facts.updatesIfExists("animal", Animal.class, a -> a.setColor(Color.BLUE));
+        }
+
+        @Override
+        public String toString() {
+            return "Canary is blue Rule";
         }
     }
 

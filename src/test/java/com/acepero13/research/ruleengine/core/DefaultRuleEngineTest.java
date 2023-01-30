@@ -5,6 +5,8 @@ import com.acepero13.research.ruleengine.api.RuleEngine;
 import com.acepero13.research.ruleengine.api.RulesEventsListener;
 
 import com.acepero13.research.ruleengine.api.Facts;
+import com.acepero13.research.ruleengine.core.engines.DefaultRuleEngine;
+import com.acepero13.research.ruleengine.core.engines.EngineParameters;
 import com.acepero13.research.ruleengine.model.InMemoryFacts;
 import com.acepero13.research.ruleengine.model.Rules;
 import com.acepero13.research.ruleengine.model.rules.RuleBuilder;
@@ -61,7 +63,7 @@ class DefaultRuleEngineTest implements RulesEventsListener {
     void skipRuleBecauseThresholdIsTooLow() {
         Rules rules = Rules.of(createAlwaysFire(1), createRule());
         EngineParameters params = EngineParameters.builder()
-                .priorityThreshold(3).build();
+                                                  .priorityThreshold(3).build();
         facts.put("test", 0);
 
         RuleEngine rulesEngine = new DefaultRuleEngine(rules, params);

@@ -1,4 +1,4 @@
-package com.acepero13.research.ruleengine.core;
+package com.acepero13.research.ruleengine.core.engines;
 
 import lombok.Builder;
 import lombok.Getter;
