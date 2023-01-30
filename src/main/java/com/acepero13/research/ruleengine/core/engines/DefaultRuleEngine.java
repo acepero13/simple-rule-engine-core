@@ -80,6 +80,7 @@ public class DefaultRuleEngine implements RuleEngine {
                 continue;
             }
             if (evaluationFailed(facts, rule)) {
+                listeners.forEach(l -> l.evaluationFailed(rule, facts));
                 if (params.isSkipOnFirstNonTriggeredRule()) {
                     logger.debug("Stop executing rules because skipOnFirstNonTriggeredRule flag is activated");
                     break;
@@ -129,6 +130,7 @@ public class DefaultRuleEngine implements RuleEngine {
             return true;
         } catch (Exception e) {
             logFailure(e, rule);
+            listeners.forEach(l -> l.executionFailed(rule, facts));
             return false;
         }
     }

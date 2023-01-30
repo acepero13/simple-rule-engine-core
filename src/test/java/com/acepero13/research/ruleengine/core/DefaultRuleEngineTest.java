@@ -24,6 +24,8 @@ class DefaultRuleEngineTest implements RulesEventsListener {
     private final Facts facts = new InMemoryFacts();
     private final List<Rule> before = new ArrayList<>();
     private final List<Rule> after = new ArrayList<>();
+    private final List<Rule> executionFailures = new ArrayList<>();
+    private final List<Rule> evaluationFailures = new ArrayList<>();
 
     @Test
     void fireRules() {
@@ -64,7 +66,7 @@ class DefaultRuleEngineTest implements RulesEventsListener {
     void skipRuleBecauseThresholdIsTooLow() {
         Rules rules = Rules.of(createAlwaysFire(1), createRule());
         EngineParameters params = EngineParameters.builder()
-                                                  .priorityThreshold(3).build();
+                .priorityThreshold(3).build();
         facts.put("test", 0);
 
         RuleEngine rulesEngine = new DefaultRuleEngine(rules, params);
@@ -96,6 +98,8 @@ class DefaultRuleEngineTest implements RulesEventsListener {
         rulesEngine.register(this);
         rulesEngine.fire(facts);
         assertEquals(1, before.size());
+        assertEquals(1, executionFailures.size());
+
     }
 
 
@@ -123,6 +127,7 @@ class DefaultRuleEngineTest implements RulesEventsListener {
         rulesEngine.register(this);
         rulesEngine.fire(facts);
         assertEquals(1, before.size());
+        assertEquals(1, evaluationFailures.size());
     }
 
 
@@ -174,6 +179,16 @@ class DefaultRuleEngineTest implements RulesEventsListener {
             @Override
             public boolean shouldFire(Rule rule, Facts facts) {
                 return false;
+            }
+
+            @Override
+            public void evaluationFailed(Rule rule, Facts facts) {
+
+            }
+
+            @Override
+            public void executionFailed(Rule rule, Facts facts) {
+
             }
         });
         rulesEngine.fire(facts);
@@ -238,6 +253,18 @@ class DefaultRuleEngineTest implements RulesEventsListener {
     public void afterFire(Rule rule) {
         after.add(rule);
     }
+
+    @Override
+    public void evaluationFailed(Rule rule, Facts facts) {
+        this.evaluationFailures.add(rule);
+    }
+
+    @Override
+    public void executionFailed(Rule rule, Facts facts) {
+        this.executionFailures.add(rule);
+    }
+
+
 
 
 }

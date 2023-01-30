@@ -8,4 +8,7 @@ public interface RulesEventsListener {
         return true;
     }
 
+    void evaluationFailed(Rule rule, Facts facts);
+
+    void executionFailed(Rule rule, Facts facts);
 }
