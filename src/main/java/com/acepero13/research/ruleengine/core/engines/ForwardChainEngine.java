@@ -14,8 +14,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
+import java.util.function.Predicate;
 
-// TODO: ForwardChainEngineParams
 
 public class ForwardChainEngine implements RuleEngine, FactBaseListener {
     private static final Logger logger = LogManager.getLogger();
@@ -52,7 +52,8 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
         List<Rule> agenda;
         do {
             agenda = doFire(rules, facts);
-        } while (thereAreStillRulesToConsider(agenda));
+
+        } while (thereAreStillRulesToConsider(agenda, facts));
 
         facts.unregister(this);
         logger.info("Finished evaluating rules. Facts based after evaluation: {}", facts);
@@ -66,8 +67,12 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
         return agenda;
     }
 
-    private boolean thereAreStillRulesToConsider(List<Rule> agenda) {
+    private boolean thereAreStillRulesToConsider(List<Rule> agenda, Facts facts) {
         logger.debug("thereAreStillRulesToConsider. Agenda is empty: {}; there are new Facts : {}", agenda.isEmpty(), !newFacts.isEmpty());
+        if (params.stopOnCondition.test(facts)) {
+            logger.debug("Stopping because stopCondition from parameters was activated");
+            return false;
+        }
         return !agenda.isEmpty() && (!newFacts.isEmpty() || !updatedFacts.isEmpty());
     }
 
@@ -163,12 +168,17 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
     @Builder
     @ToString
     public static class ForwardChainEngineParameters {
+        private final static Predicate<Facts> DO_NOT_STOP = f -> false;
         private final int priorityThreshold;
         private final boolean considerNewFacts;
         private final boolean considerUpdatesFacts;
+        private final Predicate<Facts> stopOnCondition;
 
         public static ForwardChainEngineParameters defaultParameters() {
-            return new ForwardChainEngineParameters(Integer.MAX_VALUE - 1, true, false);
+            return new ForwardChainEngineParameters(Integer.MAX_VALUE - 1,
+                    true,
+                    false,
+                    DO_NOT_STOP);
         }
 
     }

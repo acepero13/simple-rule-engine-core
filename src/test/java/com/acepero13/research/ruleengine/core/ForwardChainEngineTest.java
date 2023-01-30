@@ -17,10 +17,45 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ForwardChainEngineTest {
-    private static final Logger logger = LogManager.getLogger();
+
+    @Test
+    void stopOnCondition(){
+        var IfAThenB = new RuleBuilder()
+                .name("A -> B")
+                .when(facts -> facts.get("A").isPresent())
+                .then(facts -> facts.put("B", "B"))
+                .build();
+
+        var IfBThenC = new RuleBuilder()
+                .name("B -> C")
+                .when(facts -> facts.get("B").isPresent())
+                .then(facts -> {
+                    facts.put(UUID.randomUUID().toString(), "C");
+                    facts.put("C", "C");
+                }) // Endless loop
+                .build();
+
+        Rules rules = new Rules(IfBThenC, IfAThenB);
+        Facts facts = new InMemoryFacts();
+        facts.put("A", "A");
+
+        var params = ForwardChainEngine.ForwardChainEngineParameters
+                .builder()
+                .stopOnCondition(f -> f.exists("C"))
+                .build();
+
+        RuleEngine engine = new ForwardChainEngine(rules, params);
+        engine.fire(facts);
+
+        String actual = facts.get("C", String.class, "");
+        assertEquals("C", actual);
+
+    }
 
     @Test
     void inference() {
