@@ -26,7 +26,7 @@ class RuleProxyTest {
     @Test
     void cannotBeEqualToNull(){
         var rule = RuleBuilder.of(new TestRule());
-        assertFalse(rule.equals(null));
+        assertNotEquals(null, rule);
     }
 
     @Test

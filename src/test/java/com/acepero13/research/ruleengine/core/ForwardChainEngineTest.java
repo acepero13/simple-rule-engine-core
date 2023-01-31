@@ -14,8 +14,6 @@ import com.acepero13.research.ruleengine.model.rules.RuleBuilder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -26,8 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ForwardChainEngineTest implements RulesEventsListener {
 
-    private final List<com.acepero13.research.ruleengine.api.Rule> evaluationFailures = new ArrayList<>();
-    private List<com.acepero13.research.ruleengine.api.Rule> executionFailures = new ArrayList<>();
+    private final List<com.acepero13.research.ruleengine.api.Rule> executionFailures = new ArrayList<>();
 
     @Test
     void testFailingExecution() {
@@ -198,7 +195,6 @@ class ForwardChainEngineTest implements RulesEventsListener {
 
     @Override
     public void evaluationFailed(com.acepero13.research.ruleengine.api.Rule rule, Facts facts) {
-        this.evaluationFailures.add(rule);
     }
 
     @Override
