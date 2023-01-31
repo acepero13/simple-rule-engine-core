@@ -27,8 +27,8 @@ public class RuleProxy implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
-        String name = method.getName();
-        switch (name) {
+        String methodName = method.getName();
+        switch (methodName) {
             case "name":
                 return getRuleName();
             case "priority":
@@ -48,6 +48,8 @@ public class RuleProxy implements InvocationHandler {
                 return objectHashCode();
             case "compareTo":
                 return compareToMethod(args);
+            default:
+                break;
         }
         return null;
     }
@@ -103,9 +105,9 @@ public class RuleProxy implements InvocationHandler {
     private boolean evaluate(Object[] args) {
         Optional<Method> opMethod = AnnotationHelper.getMethodForCalling(target, Condition.class);
         return opMethod.map(m -> tryToExecute(m, args))
-                .filter(Boolean.class::isInstance)
-                .map(Boolean.class::cast)
-                .orElse(false);
+                       .filter(Boolean.class::isInstance)
+                       .map(Boolean.class::cast)
+                       .orElse(false);
     }
 
     private Object tryToExecute(Method method, Object[] facts) {
@@ -127,11 +129,11 @@ public class RuleProxy implements InvocationHandler {
 
     private void fetchMetaData() {
         AnnotationHelper.getRuleAnnotation(target)
-                .ifPresent(a -> {
-                    this.name = a.name();
-                    this.priority = a.priority();
-                    this.description = a.description();
-                });
+                        .ifPresent(a -> {
+                            this.name = a.name();
+                            this.priority = a.priority();
+                            this.description = a.description();
+                        });
     }
 
     public static Rule asRule(final Object rule) {

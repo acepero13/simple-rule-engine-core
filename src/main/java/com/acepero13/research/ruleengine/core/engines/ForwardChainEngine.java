@@ -170,7 +170,7 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
     @Builder
     @ToString
     public static class ForwardChainEngineParameters {
-        private final static Predicate<Facts> DO_NOT_STOP = f -> false;
+        private static final Predicate<Facts> DO_NOT_STOP = f -> false;
         private final int priorityThreshold;
         private final boolean considerNewFacts;
         private final boolean considerUpdatesFacts;

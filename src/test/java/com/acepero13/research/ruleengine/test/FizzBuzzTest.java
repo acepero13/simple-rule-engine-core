@@ -71,7 +71,7 @@ public class FizzBuzzTest {
                 .build();
 
         Rule nonFizzBuzz = new RuleBuilder()
-                .name("buzz")
+                .name("neither fizz nor buzz")
                 .priority(1)
                 .when(facts -> facts.get(NUMBER_FACT)
                         .map(Integer.class::cast)

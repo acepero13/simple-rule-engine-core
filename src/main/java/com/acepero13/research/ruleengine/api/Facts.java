@@ -1,6 +1,5 @@
 package com.acepero13.research.ruleengine.api;
 
-import com.acepero13.research.ruleengine.api.FactBaseListener;
 import com.acepero13.research.ruleengine.model.Fact;
 import com.acepero13.research.ruleengine.model.FactsOperation;
 
