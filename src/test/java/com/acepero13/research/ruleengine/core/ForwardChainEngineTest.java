@@ -177,8 +177,11 @@ class ForwardChainEngineTest implements RulesEventsListener {
         RuleEngine engine = new ForwardChainEngine(rules);
         engine.fire(facts);
 
-        Animal inferred = facts.get("animal", Animal.class, null);
-        assertEquals(Color.GREEN, inferred.getColor());
+        Color actual = facts.get("animal", Animal.class)
+             .map(Animal::getColor)
+             .orElse(null);
+
+        assertEquals(Color.GREEN, actual);
 
 
     }
