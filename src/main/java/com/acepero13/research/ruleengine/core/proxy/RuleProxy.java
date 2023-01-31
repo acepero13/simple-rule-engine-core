@@ -54,14 +54,22 @@ public class RuleProxy implements InvocationHandler {
 
     private Object compareToMethod(Object[] args) {
         Object anotherRule = args[0];
-        if (Proxy.isProxyClass(anotherRule.getClass())) {
-            RuleProxy ruleProxy = (RuleProxy) Proxy.getInvocationHandler(anotherRule);
+        if (isProxyClass(anotherRule)) {
+            RuleProxy ruleProxy = toRuleProxy(anotherRule);
             return Integer.compare((ruleProxy).getPriority(), getPriority());
         } else if (anotherRule instanceof Rule) {
             return Integer.compare(((Rule) anotherRule).priority(), getPriority());
         }
         logger.debug("Could not compare rules, with arguments: {}", args);
         return -1;
+    }
+
+    private static RuleProxy toRuleProxy(Object anotherRule) {
+        return (RuleProxy) Proxy.getInvocationHandler(anotherRule);
+    }
+
+    private static boolean isProxyClass(Object anotherRule) {
+        return Proxy.isProxyClass(anotherRule.getClass());
     }
 
     private void execute(Object[] args) {
@@ -153,13 +161,31 @@ public class RuleProxy implements InvocationHandler {
 
     public boolean objectEquals(Object o) {
         if (this.target == o) return true;
-        if (o == null || target.getClass() != o.getClass()) return false;
+        if (o == null ) return false;
 
-        RuleProxy ruleProxy = (RuleProxy) o;
+        if(isProxyClass(o)) {
+            RuleProxy ruleProxy = toRuleProxy(o);
+            return isEqualToTarget(ruleProxy);
+        } else if (o instanceof Rule) {
+            return equalToRealRule((Rule) o);
+        }
+        return false;
 
-        if (getPriority() != ruleProxy.getPriority()) return false;
-        if (!name.equals(ruleProxy.name)) return false;
-        return getDescription().equals(ruleProxy.getDescription());
+
+
+    }
+
+    private boolean equalToRealRule(Rule another) {
+       if(getPriority() != another.priority()) return false;
+       if(!name.equals(another.name())) return false;
+       return description.equals(another.description());
+    }
+
+    private boolean isEqualToTarget(RuleProxy another) {
+        if(this.getClass() != another.getClass()) return false;
+        if (getPriority() != another.getPriority()) return false;
+        if (!name.equals(another.name)) return false;
+        return getDescription().equals(another.getDescription());
     }
 
 

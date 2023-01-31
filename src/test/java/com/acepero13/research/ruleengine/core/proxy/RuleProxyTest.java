@@ -12,11 +12,56 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class RuleProxyTest {
     private final List<Integer> numbers = new ArrayList<>();
+    @Test
+    void toProxiesAreEqual(){
+        var rule = RuleBuilder.of(new TestRule());
+        var another = RuleBuilder.of(new TestRule());
+        assertEquals(rule, another);
+    }
+
+    @Test
+    void cannotBeEqualToNull(){
+        var rule = RuleBuilder.of(new TestRule());
+        assertFalse(rule.equals(null));
+    }
+
+    @Test
+    void proxyIsEqualToRule(){
+        //@Rule(name = "fizz", priority = 2, description = "desc")
+        var rule = RuleBuilder.of(new TestRule());
+        var another = new RuleBuilder()
+                .name("fizz")
+                .priority(2)
+                .description("desc")
+                .build();
+        assertEquals(rule, another);
+    }
+
+    @Test void asRule(){
+        var another = new RuleBuilder()
+                .name("fizz")
+                .priority(2)
+                .description("desc")
+                .build();
+        var rule = RuleProxy.asRule(another);
+        assertEquals("fizz", rule.name());
+    }
+
+    @Test void description(){
+        var rule = RuleBuilder.of(new TestRule());
+        assertEquals("desc", rule.description());
+    }
+
+    @Test void priority(){
+        var rule = RuleBuilder.of(new TestRule());
+        assertEquals(2, rule.priority());
+    }
+
+
 
     @Test
     void loadRule() {
