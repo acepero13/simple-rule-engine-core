@@ -120,7 +120,22 @@ class RuleProxyTest {
         }
     }
 
-    @Rule(name = "another", priority = 3, description = "desc")
+    @Rule(name = "fizz", priority = 2, description = "desc")
+    private class RuleWithParams {
+        @Condition
+        public boolean condition(@Fact("number") Integer number) {
+            return number % 7 == 0;
+        }
+
+        @Action
+        public void action(@Fact("number") int number, Facts facts) {
+            System.out.println(" fizz");
+            numbers.add(number);
+        }
+    }
+
+
+    @com.acepero13.research.ruleengine.annotations.Rule(name = "another", priority = 3, description = "desc")
     private class AnotherRule {
         @Condition
         public boolean condition(@Fact("number") Integer number) {
