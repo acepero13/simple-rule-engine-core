@@ -3,6 +3,7 @@ package com.acepero13.research.ruleengine.api;
 import com.acepero13.research.ruleengine.model.Fact;
 import com.acepero13.research.ruleengine.model.FactsOperation;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
@@ -37,4 +38,6 @@ public interface Facts extends Iterable<Fact<?>> {
     boolean exists(String factName);
 
     String toString();
+
+    Map<String, Object> asMap();
 }

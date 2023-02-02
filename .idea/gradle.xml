@@ -8,7 +8,9 @@
         <option name="gradleJvm" value="11 (2)" />
         <option name="modules">
           <set>
+            <option value="$PROJECT_DIR$/../JexlRules" />
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/../jexl" />
           </set>
         </option>
       </GradleProjectSettings>

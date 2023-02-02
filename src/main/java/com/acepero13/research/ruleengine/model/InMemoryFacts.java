@@ -146,4 +146,12 @@ public class InMemoryFacts implements Facts {
     public boolean exists(String factName) {
         return facts.stream().anyMatch(f -> f.matchesName(factName));
     }
+
+    @Override
+    public Map<String, Object> asMap() {
+        Map<String, Object> map = new HashMap<>();
+        facts.forEach(f -> map.put(f.name(), f.getValue()));
+        return map;
+    }
+
 }

@@ -4,7 +4,7 @@ import com.acepero13.research.ruleengine.api.Rule;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
-abstract class BasicRule implements Rule {
+public abstract class BasicRule implements Rule {
     public static final int DEFAULT_PRIORITY = Integer.MAX_VALUE;
     private final String name;
     private final String description;

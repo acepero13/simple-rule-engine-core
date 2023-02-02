@@ -1,10 +1,12 @@
 plugins {
     id 'java'
     id 'jacoco'
+    id 'maven-publish'
 }
 
+
 group 'com.acepero13.research.ruleengine'
-version '1.0-SNAPSHOT'
+version '1.0.0'
 
 repositories {
     mavenCentral()
@@ -36,4 +38,16 @@ test {
 }
 jacocoTestReport {
     dependsOn test // tests are required to run before generating the report
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+task prepareKotlinBuildScriptModel {
+
 }
