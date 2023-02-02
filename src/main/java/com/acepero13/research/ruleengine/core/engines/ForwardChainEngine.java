@@ -179,7 +179,7 @@ public class ForwardChainEngine implements RuleEngine, FactBaseListener {
         public static ForwardChainEngineParameters defaultParameters() {
             return new ForwardChainEngineParameters(Integer.MAX_VALUE - 1,
                     true,
-                    false,
+                    true,
                     DO_NOT_STOP);
         }
 
